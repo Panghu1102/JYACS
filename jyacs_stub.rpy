@@ -1,0 +1,159 @@
+# jyacs_stub.rpy – Compatibility stubs for running JYACS sub-mod inside Just Yuri without Monika-After-Story dependencies.
+# This file provides compatibility layer while respecting the main game's configuration.
+
+# 使用更低的优先级以确保不会干扰主游戏初始化
+init -1500 python:
+    # Import required modules inside init block to prevent early execution
+    import types
+    import logging
+    import store
+
+    # Python 2.7 compatible SimpleNamespace
+    try:
+        from types import SimpleNamespace
+    except ImportError:
+        class SimpleNamespace(object):
+            def __init__(self, **kwargs):
+                self.__dict__.update(kwargs)
+            def __repr__(self):
+                keys = sorted(self.__dict__)
+                items = ("{}={!r}".format(k, self.__dict__[k]) for k in keys)
+                return "{}({})".format(type(self).__name__, ", ".join(items))
+            def __eq__(self, other):
+                return self.__dict__ == other.__dict__
+
+    # ------------------------------------------------------------------
+    # Generic no-op helpers ------------------------------------------------
+    # ------------------------------------------------------------------
+    def _noop(*_args, **_kwargs):
+        """A do-nothing placeholder function."""
+        return None
+
+    def _decorator_noop(*_dargs, **_dkwargs):
+        """Return a decorator that leaves the wrapped function untouched."""
+        def _wrap(fn):
+            return fn
+        return _wrap
+
+    # ------------------------------------------------------------------
+    # Stub for jyacs_submod_utils ----------------------------------------
+    # ------------------------------------------------------------------
+    if not hasattr(store, "jyacs_submod_utils"):
+        store.jyacs_submod_utils = SimpleNamespace()
+        store.jyacs_submod_utils.Submod = _noop
+        store.jyacs_submod_utils.getAndRunFunctions = _noop
+        store.jyacs_submod_utils.functionplugin = _decorator_noop
+        store.jyacs_submod_utils.submod_log = SimpleNamespace()
+        store.jyacs_submod_utils.submod_log.level = logging.INFO
+        store.jyacs_submod_utils.isSubmodInstalled = lambda name: False
+
+    # ------------------------------------------------------------------
+    # Alias MAS symbols to the same stub so any residual MAS references
+    # won't break the build. ------------------------------------------------
+    # ------------------------------------------------------------------
+    if not hasattr(store, "mas_submod_utils"):
+        store.mas_submod_utils = store.jyacs_submod_utils
+
+    # Provide dummy objects occasionally accessed by legacy MAS code
+    if not hasattr(store, "mas_ptod"):
+        store.mas_ptod = SimpleNamespace()
+        store.mas_ptod.font = None
+
+    if not hasattr(store, "mas_ui"):
+        store.mas_ui = SimpleNamespace()
+        store.mas_ui.MONO_FONT = "DejaVuSansMono.ttf"
+
+# 确保游戏标题正确设置，使用更低的优先级
+init -1600 python:
+    # 确保游戏标题正确设置
+    # 许多Ren'Py项目（包括Just Yuri）在options.rpy中通过config.name或gui.window_title设置显示标题。
+    # 如果初始化早期的错误阻止options.rpy执行，窗口会回退到通用的"A Ren'Py Game"字符串。
+    # 在这里设置一个安全的默认值，确保即使其他脚本错误发生，标题也保持正确。
+    # 
+    # 我们只在尚未定义名称时设置它，以避免在已存在时覆盖真实值。
+    if not getattr(config, "name", None):
+        config.name = "Just Yuri"
+        print("JYACS: 已设置游戏标题为 'Just Yuri'")
+    
+    if not getattr(config, "window_title", None):
+        config.window_title = "Just Yuri"
+        print("JYACS: 已设置窗口标题为 'Just Yuri'")
+
+# 添加更多的兼容性函数和变量
+init -1400 python:
+    if not hasattr(store, "getAPIKey"):
+        store.getAPIKey = lambda *_args, **_kwargs: ""
+
+    # Common MAS helper symbols occasionally referenced -------------------
+    mas_helpers = {
+        "_mas_getAffection": (lambda *_a, **_k: 0),
+        "mas_getAffection": (lambda *_a, **_k: 0),
+        "mas_getEV": (lambda *_a, **_k: None),
+        "mas_inEVL": (lambda *_a, **_k: False),
+    }
+    
+    # Add each helper to store if it doesn't exist
+    for _name, _default in mas_helpers.items():
+        if not hasattr(store, _name):
+            setattr(store, _name, _default)
+
+    if not hasattr(store, "mas_rev_unseen"):
+        store.mas_rev_unseen = []
+        
+    if not hasattr(store, "player"):
+        store.player = "Player"
+        
+    def getEV(name):
+        """Placeholder for event access function"""
+        return None
+        
+    if not hasattr(store, "getEV"):
+        store.getEV = getEV
+        
+    if not hasattr(store, "jyacs_chat_history"):
+        store.jyacs_chat_history = []
+        
+    if not hasattr(store, "jyacs_log"):
+        def jyacs_log(message, level="INFO"):
+            """Simple logging function"""
+            print("[JYACS-{}] {}".format(level, message))
+        store.jyacs_log = jyacs_log
+        
+    # 确保基本变量存在
+    if not hasattr(store, "jyacs_chr_exist"):
+        store.jyacs_chr_exist = False
+        
+    if not hasattr(store, "jyacs_chr_changed"):
+        store.jyacs_chr_changed = False
+        
+    # 确保jyacs_confont变量存在
+    if not hasattr(store, "jyacs_confont"):
+        store.jyacs_confont = "mod_assets/font/SarasaMonoTC-SemiBold.ttf"
+        
+    # 确保基本函数存在
+    if not hasattr(store, "_jyacs_verify_token"):
+        def _jyacs_verify_token():
+            """验证令牌的占位函数"""
+            return True
+        store._jyacs_verify_token = _jyacs_verify_token
+        
+    # 确保登录变量存在
+    if not hasattr(store, "_jyacs_LoginAcc"):
+        store._jyacs_LoginAcc = ""
+    if not hasattr(store, "_jyacs_LoginPw"):
+        store._jyacs_LoginPw = ""
+    if not hasattr(store, "_jyacs_LoginEmail"):
+        store._jyacs_LoginEmail = ""
+
+# 防止覆盖原游戏的标签
+init -1300 python:
+    # 确保不会覆盖原游戏的start标签
+    if renpy.has_label("start"):
+        print("JYACS: 检测到原游戏start标签，不会覆盖")
+    else:
+        print("JYACS: 未检测到原游戏start标签，这可能是个问题")
+        
+    # 检查并报告其他关键标签
+    for label in ["splashscreen", "after_load", "quit"]:
+        if renpy.has_label(label):
+            print(u"JYACS: 检测到原游戏{}标签".format(label)) 
