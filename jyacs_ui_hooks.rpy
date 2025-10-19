@@ -1,5 +1,5 @@
 # jyacs_ui_hooks.rpy - JYACS UI 钩子和样式系统
-# 版本: 2.0.0
+# 版本: 1.0.0
 # 作者: Panghu1102
 # 说明: 集成 JYACS 设置到 JY 1.10.11 原生设置界面
 
@@ -24,7 +24,7 @@ init -1 style jyacs_check_button is check_button:
 
 init -1 style jyacs_check_button_text is check_button_text:
     properties gui.button_text_properties("check_button")
-    font "gui/font/Halogen.ttf"
+    font "mod_assets/font/SarasaMonoTC-SemiBold.ttf"
     outlines []
 
 # JYACS 单选按钮样式（继承自 JY 的 radio_button）
@@ -34,7 +34,7 @@ init -1 style jyacs_radio_button is radio_button:
 
 init -1 style jyacs_radio_button_text is radio_button_text:
     properties gui.button_text_properties("radio_button")
-    font "gui/font/Halogen.ttf"
+    font "mod_assets/font/SarasaMonoTC-SemiBold.ttf"
     outlines []
 
 # JYACS 滑块样式（继承自 JY 的 slider）
@@ -64,12 +64,12 @@ init -1 style jyacs_frame is empty:
 
 # JYACS 文本样式
 init -1 style jyacs_text is gui_text:
-    font "gui/font/Halogen.ttf"
+    font "mod_assets/font/SarasaMonoTC-SemiBold.ttf"
     size 18
     color "#fff"
 
 init -1 style jyacs_label_text is gui_label_text:
-    font "gui/font/RifficFree-Bold.ttf"
+    font "mod_assets/font/SarasaMonoTC-SemiBold.ttf"
     size 20
     color "#fff"
     outlines [(2, "#a679ff", 0, 0), (1, "#a679ff", 1, 1)]
@@ -81,7 +81,7 @@ init -1 style jyacs_input is input:
 
 # JYACS 状态文本样式
 init -1 style jyacs_status_text is gui_text:
-    font "gui/font/Halogen.ttf"
+    font "mod_assets/font/SarasaMonoTC-SemiBold.ttf"
     size 16
     color "#d5bdff"
 
@@ -833,20 +833,102 @@ init -500 screen preferences():
                         text_style "jyacs_pref_label_text"
                     
                     # 状态显示
+                    python:
+                        # 调用函数获取显示文本
+                        api_status_text = jyacs_get_connection_status_display()
+                        queue_length_text = jyacs_get_queue_length_display()
+                    
                     hbox:
                         spacing 30
                         
-                        text "API 状态: [jyacs_get_connection_status_display()]":
+                        text "API 状态: [api_status_text]":
                             style "jyacs_status_text"
                         
-                        text "消息队列: [jyacs_get_queue_length_display()]":
+                        text "消息队列: [queue_length_text]":
                             style "jyacs_status_text"
                     
-                    null height 5
+                    null height 10
+                    
+                    # API 配置区域
+                    vbox:
+                        spacing 20
+                        xfill True
+                        
+                        # API 密钥
+                        hbox:
+                            spacing 15
+                            
+                            text "API 密钥:":
+                                style "jyacs_text"
+                                min_width 100
+                            
+                            python:
+                                api_key = persistent.jyacs_setting_dict.get('api_key', '')
+                                api_key_display = ("*" * min(len(api_key), 20)) if api_key else "未设置"
+                            
+                            textbutton "[api_key_display]":
+                                style "jyacs_check_button"
+                                text_style "jyacs_check_button_text"
+                                action Show("jyacs_text_input", 
+                                          prompt_text="请输入 API 密钥:", 
+                                          dict_obj=persistent.jyacs_setting_dict, 
+                                          key_name="api_key",
+                                          is_password=True)
+                                xsize 300
+                        
+                        # API 地址
+                        hbox:
+                            spacing 15
+                            
+                            text "API 地址:":
+                                style "jyacs_text"
+                                min_width 100
+                            
+                            python:
+                                api_url_display = persistent.jyacs_setting_dict.get('api_url', '') or "未设置"
+                                if len(api_url_display) > 40:
+                                    api_url_display = api_url_display[:37] + "..."
+                            
+                            textbutton "[api_url_display]":
+                                style "jyacs_check_button"
+                                text_style "jyacs_check_button_text"
+                                action Show("jyacs_text_input", 
+                                          prompt_text="请输入 API 地址:", 
+                                          dict_obj=persistent.jyacs_setting_dict, 
+                                          key_name="api_url")
+                                xsize 300
+                        
+                        # 模型名称
+                        hbox:
+                            spacing 15
+                            
+                            text "模型名称:":
+                                style "jyacs_text"
+                                min_width 100
+                            
+                            python:
+                                model_name_display = persistent.jyacs_setting_dict.get('model_name', '') or "未设置"
+                            
+                            textbutton "[model_name_display]":
+                                style "jyacs_check_button"
+                                text_style "jyacs_check_button_text"
+                                action Show("jyacs_text_input", 
+                                          prompt_text="请输入模型名称:", 
+                                          dict_obj=persistent.jyacs_setting_dict, 
+                                          key_name="model_name")
+                                xsize 300
+                    
+                    null height 10
                     
                     # 快速操作按钮
                     hbox:
                         spacing 20
+                        
+                        textbutton "保存设置":
+                            style "jyacs_check_button"
+                            text_style "jyacs_check_button_text"
+                            action Function(jyacs_apply_setting)
+                            xsize 100
                         
                         textbutton "连接":
                             style "jyacs_check_button"
