@@ -1,5 +1,5 @@
 # jyacs_settings.rpy - JYACS 设置相关函数
-# 版本: 2.0.0
+# 版本: 1.0.0
 # 作者: Panghu1102
 # 说明: 此文件已重构，UI 相关内容已移至 jyacs_ui_hooks.rpy
 

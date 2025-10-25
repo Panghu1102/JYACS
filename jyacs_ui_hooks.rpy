@@ -1,7 +1,7 @@
-# jyacs_ui_hooks.rpy - JYACS UI 钩子和样式系统
+# jyacs_ui_hooks.rpy - JYACS UI 钩子和样式系统（简化版）
 # 版本: 1.0.0
 # 作者: Panghu1102
-# 说明: 集成 JYACS 设置到 JY 1.10.11 原生设置界面
+# 说明: 仅保留基本API配置功能，移除详细设置和高级功能
 
 # ============================================================================
 # 样式系统定义
@@ -11,7 +11,7 @@
 # JYACS 标签样式（继承自 JY 的 pref_label）
 init -1 style jyacs_pref_label is pref_label
 init -1 style jyacs_pref_label_text is pref_label_text:
-    font "gui/font/RifficFree-Bold.ttf"
+    font "mod_assets/font/SarasaMonoTC-SemiBold.ttf"
     size 24
     color "#fff"
     outlines [(3, "#a679ff", 0, 0), (1, "#a679ff", 1, 1)]
@@ -26,34 +26,10 @@ init -1 style jyacs_check_button_text is check_button_text:
     properties gui.button_text_properties("check_button")
     font "mod_assets/font/SarasaMonoTC-SemiBold.ttf"
     outlines []
-
-# JYACS 单选按钮样式（继承自 JY 的 radio_button）
-init -1 style jyacs_radio_button is radio_button:
-    properties gui.button_properties("radio_button")
-    foreground "gui/button/check_[prefix_]foreground.png"
-
-init -1 style jyacs_radio_button_text is radio_button_text:
-    properties gui.button_text_properties("radio_button")
-    font "mod_assets/font/SarasaMonoTC-SemiBold.ttf"
-    outlines []
-
-# JYACS 滑块样式（继承自 JY 的 slider）
-init -1 style jyacs_slider is slider_slider:
-    xsize 350
-
-init -1 style jyacs_slider_button is slider_button:
-    properties gui.button_properties("slider_button")
-    yalign 0.5
-    left_margin 10
-
-init -1 style jyacs_slider_button_text is slider_button_text:
-    properties gui.button_text_properties("slider_button")
+    text_align 0.5
+    layout "nobreak"
 
 # JYACS 容器样式
-init -1 style jyacs_vbox is pref_vbox:
-    xsize 225
-    spacing gui.pref_button_spacing
-
 init -1 style jyacs_frame is empty:
     background Frame("gui/overlay/confirm.png", gui.confirm_frame_borders, tile=gui.frame_tile)
     padding gui.confirm_frame_borders.padding
@@ -152,7 +128,7 @@ init -10 python:
 # ============================================================================
 
 # ----------------------------------------------------------------------------
-# 任务 2: 文本输入对话框
+# 文本输入对话框
 # ----------------------------------------------------------------------------
 
 init 15 screen jyacs_text_input(prompt_text, dict_obj, key_name, is_password=False):
@@ -287,413 +263,10 @@ init 15 screen jyacs_password_input_helper(dict_obj, key_name):
                     action Hide("jyacs_password_input_helper")
 
 # ----------------------------------------------------------------------------
-# 任务 3: 详细设置界面
-# ----------------------------------------------------------------------------
-
-# 定义标签页状态
-default jyacs_settings_tab = "basic"  # "basic" 或 "advanced"
-
-init 15 screen jyacs_detailed_settings():
-    # JYACS 详细设置界面
-    # 包含基础设置和高级设置两个标签页
-    
-    modal True
-    zorder 200
-    
-    # 背景遮罩
-    add "gui/overlay/confirm.png"
-    
-    # 主容器
-    frame:
-        style "jyacs_frame"
-        xsize 900
-        ysize 650
-        
-        vbox:
-            spacing 15
-            xfill True
-            
-            # 标题
-            text "JYACS 详细设置":
-                style "jyacs_label_text"
-                size 28
-                xalign 0.5
-                outlines [(4, "#a679ff", 0, 0), (2, "#a679ff", 2, 2)]
-            
-            null height 5
-            
-            # 标签页导航
-            hbox:
-                xalign 0.5
-                spacing 20
-                
-                textbutton "基础设置":
-                    style "jyacs_radio_button"
-                    text_style "jyacs_radio_button_text"
-                    action SetVariable("jyacs_settings_tab", "basic")
-                    xsize 150
-                
-                textbutton "高级设置":
-                    style "jyacs_radio_button"
-                    text_style "jyacs_radio_button_text"
-                    action SetVariable("jyacs_settings_tab", "advanced")
-                    xsize 150
-            
-            null height 10
-            
-            # 设置内容区域（带滚动）
-            viewport:
-                scrollbars "vertical"
-                mousewheel True
-                draggable True
-                ysize 450
-                xsize 860
-                
-                if jyacs_settings_tab == "basic":
-                    use jyacs_basic_settings_content
-                else:
-                    use jyacs_advanced_settings_content
-            
-            null height 10
-            
-            # 底部按钮
-            hbox:
-                xalign 0.5
-                spacing 30
-                
-                textbutton "保存设置":
-                    style "jyacs_check_button"
-                    text_style "jyacs_check_button_text"
-                    action [
-                        Function(jyacs_apply_all_settings),
-                        Hide("jyacs_detailed_settings")
-                    ]
-                    xsize 150
-                
-                textbutton "验证配置":
-                    style "jyacs_check_button"
-                    text_style "jyacs_check_button_text"
-                    action Function(jyacs_verify_api_config)
-                    xsize 150
-                
-                textbutton "返回":
-                    style "jyacs_check_button"
-                    text_style "jyacs_check_button_text"
-                    action Hide("jyacs_detailed_settings")
-                    xsize 150
-    
-    # ESC 键关闭
-    key "game_menu" action Hide("jyacs_detailed_settings")
-
-# 基础设置内容
-init 15 screen jyacs_basic_settings_content():
-    vbox:
-        spacing 25
-        xfill True
-        
-        # API 配置区域
-        frame:
-            style_prefix "jyacs_pref"
-            background Frame("gui/overlay/game_menu.png", Borders(10, 10, 10, 10))
-            padding (20, 15)
-            xfill True
-            
-            vbox:
-                spacing 15
-                xfill True
-                
-                label "API 配置":
-                    style "jyacs_pref_label"
-                    text_style "jyacs_pref_label_text"
-                
-                # API 密钥
-                hbox:
-                    spacing 15
-                    
-                    text "API 密钥:":
-                        style "jyacs_text"
-                        min_width 120
-                    
-                    $ api_key = persistent.jyacs_setting_dict.get('api_key', '')
-                    $ api_key_display = ("*" * min(len(api_key), 20)) if api_key else "未设置"
-                    
-                    textbutton "[api_key_display]":
-                        style "jyacs_check_button"
-                        text_style "jyacs_check_button_text"
-                        action Show("jyacs_text_input", 
-                                  prompt_text="请输入 API 密钥:", 
-                                  dict_obj=persistent.jyacs_setting_dict, 
-                                  key_name="api_key",
-                                  is_password=True)
-                        xsize 400
-                
-                # API 地址
-                hbox:
-                    spacing 15
-                    
-                    text "API 地址:":
-                        style "jyacs_text"
-                        min_width 120
-                    
-                    $ api_url_display = persistent.jyacs_setting_dict.get('api_url', '') or "未设置"
-                    
-                    textbutton "[api_url_display]":
-                        style "jyacs_check_button"
-                        text_style "jyacs_check_button_text"
-                        action Show("jyacs_text_input", 
-                                  prompt_text="请输入 API 地址:", 
-                                  dict_obj=persistent.jyacs_setting_dict, 
-                                  key_name="api_url")
-                        xsize 400
-                
-                # 模型名称
-                hbox:
-                    spacing 15
-                    
-                    text "模型名称:":
-                        style "jyacs_text"
-                        min_width 120
-                    
-                    $ model_name_display = persistent.jyacs_setting_dict.get('model_name', '') or "未设置"
-                    
-                    textbutton "[model_name_display]":
-                        style "jyacs_check_button"
-                        text_style "jyacs_check_button_text"
-                        action Show("jyacs_text_input", 
-                                  prompt_text="请输入模型名称:", 
-                                  dict_obj=persistent.jyacs_setting_dict, 
-                                  key_name="model_name")
-                        xsize 400
-        
-        # 连接设置区域
-        frame:
-            style_prefix "jyacs_pref"
-            background Frame("gui/overlay/game_menu.png", Borders(10, 10, 10, 10))
-            padding (20, 15)
-            xfill True
-            
-            vbox:
-                spacing 15
-                xfill True
-                
-                label "连接设置":
-                    style "jyacs_pref_label"
-                    text_style "jyacs_pref_label_text"
-                
-                textbutton "自动连接":
-                    style "jyacs_check_button"
-                    text_style "jyacs_check_button_text"
-                    action ToggleDict(persistent.jyacs_setting_dict, "auto_connect")
-                    selected persistent.jyacs_setting_dict.get("auto_connect", True)
-                
-                textbutton "自动重连":
-                    style "jyacs_check_button"
-                    text_style "jyacs_check_button_text"
-                    action ToggleDict(persistent.jyacs_setting_dict, "auto_reconnect")
-                    selected persistent.jyacs_setting_dict.get("auto_reconnect", True)
-                
-                textbutton "启用触发器":
-                    style "jyacs_check_button"
-                    text_style "jyacs_check_button_text"
-                    action ToggleDict(persistent.jyacs_setting_dict, "enable_triggers")
-                    selected persistent.jyacs_setting_dict.get("enable_triggers", True)
-        
-        # 功能设置区域
-        frame:
-            style_prefix "jyacs_pref"
-            background Frame("gui/overlay/game_menu.png", Borders(10, 10, 10, 10))
-            padding (20, 15)
-            xfill True
-            
-            vbox:
-                spacing 15
-                xfill True
-                
-                label "功能设置":
-                    style "jyacs_pref_label"
-                    text_style "jyacs_pref_label_text"
-                
-                textbutton "启用情绪识别":
-                    style "jyacs_check_button"
-                    text_style "jyacs_check_button_text"
-                    action ToggleDict(persistent.jyacs_setting_dict, "enable_emotion")
-                    selected persistent.jyacs_setting_dict.get("enable_emotion", True)
-                
-                textbutton "回复时显示控制台":
-                    style "jyacs_check_button"
-                    text_style "jyacs_check_button_text"
-                    action ToggleDict(persistent.jyacs_setting_dict, "show_console_when_reply")
-                    selected persistent.jyacs_setting_dict.get("show_console_when_reply", False)
-                
-                textbutton "启用 Mspire":
-                    style "jyacs_check_button"
-                    text_style "jyacs_check_button_text"
-                    action ToggleDict(persistent.jyacs_setting_dict, "mspire_enable")
-                    selected persistent.jyacs_setting_dict.get("mspire_enable", True)
-                
-                textbutton "严格模式":
-                    style "jyacs_check_button"
-                    text_style "jyacs_check_button_text"
-                    action ToggleDict(persistent.jyacs_setting_dict, "strict_mode")
-                    selected persistent.jyacs_setting_dict.get("strict_mode", False)
-
-# 高级设置内容
-init 15 screen jyacs_advanced_settings_content():
-    vbox:
-        spacing 25
-        xfill True
-        
-        # 超参数设置区域
-        frame:
-            style_prefix "jyacs_pref"
-            background Frame("gui/overlay/game_menu.png", Borders(10, 10, 10, 10))
-            padding (20, 15)
-            xfill True
-            
-            vbox:
-                spacing 20
-                xfill True
-                
-                label "超参数设置":
-                    style "jyacs_pref_label"
-                    text_style "jyacs_pref_label_text"
-                
-                # Temperature
-                vbox:
-                    spacing 5
-                    
-                    text "Temperature: [persistent.jyacs_advanced_setting.get('temperature', 0.7):.2f]":
-                        style "jyacs_text"
-                    
-                    bar:
-                        value DictValue(persistent.jyacs_advanced_setting, "temperature", 2.0, step=0.01, offset=0)
-                        style "jyacs_slider"
-                        xsize 600
-                
-                # Top P
-                vbox:
-                    spacing 5
-                    
-                    text "Top P: [persistent.jyacs_advanced_setting.get('top_p', 0.9):.2f]":
-                        style "jyacs_text"
-                    
-                    bar:
-                        value DictValue(persistent.jyacs_advanced_setting, "top_p", 1.0, step=0.01, offset=0)
-                        style "jyacs_slider"
-                        xsize 600
-                
-                # Max Tokens
-                vbox:
-                    spacing 5
-                    
-                    text "Max Tokens: [persistent.jyacs_advanced_setting.get('max_tokens', 2048)]":
-                        style "jyacs_text"
-                    
-                    bar:
-                        value DictValue(persistent.jyacs_advanced_setting, "max_tokens", 4096, step=64, offset=0)
-                        style "jyacs_slider"
-                        xsize 600
-                
-                # Frequency Penalty
-                vbox:
-                    spacing 5
-                    
-                    text "Frequency Penalty: [persistent.jyacs_advanced_setting.get('frequency_penalty', 0.0):.2f]":
-                        style "jyacs_text"
-                    
-                    bar:
-                        value DictValue(persistent.jyacs_advanced_setting, "frequency_penalty", 2.0, step=0.01, offset=0)
-                        style "jyacs_slider"
-                        xsize 600
-                
-                # Presence Penalty
-                vbox:
-                    spacing 5
-                    
-                    text "Presence Penalty: [persistent.jyacs_advanced_setting.get('presence_penalty', 0.0):.2f]":
-                        style "jyacs_text"
-                    
-                    bar:
-                        value DictValue(persistent.jyacs_advanced_setting, "presence_penalty", 2.0, step=0.01, offset=0)
-                        style "jyacs_slider"
-                        xsize 600
-        
-        # 模式设置区域
-        frame:
-            style_prefix "jyacs_pref"
-            background Frame("gui/overlay/game_menu.png", Borders(10, 10, 10, 10))
-            padding (20, 15)
-            xfill True
-            
-            vbox:
-                spacing 15
-                xfill True
-                
-                label "模式设置":
-                    style "jyacs_pref_label"
-                    text_style "jyacs_pref_label_text"
-                
-                textbutton "MF 激进模式":
-                    style "jyacs_check_button"
-                    text_style "jyacs_check_button_text"
-                    action ToggleDict(persistent.jyacs_advanced_setting, "mf_aggressive")
-                    selected persistent.jyacs_advanced_setting.get("mf_aggressive", False)
-                
-                textbutton "SFE 激进模式":
-                    style "jyacs_check_button"
-                    text_style "jyacs_check_button_text"
-                    action ToggleDict(persistent.jyacs_advanced_setting, "sfe_aggressive")
-                    selected persistent.jyacs_advanced_setting.get("sfe_aggressive", False)
-                
-                textbutton "ESC 激进模式":
-                    style "jyacs_check_button"
-                    text_style "jyacs_check_button_text"
-                    action ToggleDict(persistent.jyacs_advanced_setting, "esc_aggressive")
-                    selected persistent.jyacs_advanced_setting.get("esc_aggressive", True)
-                
-                textbutton "NSFW 接受":
-                    style "jyacs_check_button"
-                    text_style "jyacs_check_button_text"
-                    action ToggleDict(persistent.jyacs_advanced_setting, "nsfw_acceptive")
-                    selected persistent.jyacs_advanced_setting.get("nsfw_acceptive", True)
-        
-        # 其他设置
-        frame:
-            style_prefix "jyacs_pref"
-            background Frame("gui/overlay/game_menu.png", Borders(10, 10, 10, 10))
-            padding (20, 15)
-            xfill True
-            
-            vbox:
-                spacing 15
-                xfill True
-                
-                label "其他设置":
-                    style "jyacs_pref_label"
-                    text_style "jyacs_pref_label_text"
-                
-                hbox:
-                    spacing 15
-                    
-                    text "随机种子:":
-                        style "jyacs_text"
-                        min_width 120
-                    
-                    $ seed_display = str(persistent.jyacs_advanced_setting.get('seed', 0))
-                    
-                    textbutton "[seed_display]":
-                        style "jyacs_check_button"
-                        text_style "jyacs_check_button_text"
-                        action Show("jyacs_text_input", 
-                                  prompt_text="请输入随机种子 (整数):", 
-                                  dict_obj=persistent.jyacs_advanced_setting, 
-                                  key_name="_seed")
-                        xsize 200
-
-# ----------------------------------------------------------------------------
-# 任务 4: 覆盖 preferences screen
+# 覆盖 preferences screen
 # ----------------------------------------------------------------------------
 # 使用 init -500 覆盖 JY 原始的 init -501 preferences screen
+
 
 init -500 screen preferences():
     # 覆盖 JY 1.10.11 的 preferences screen
@@ -819,7 +392,7 @@ init -500 screen preferences():
             # JYACS 设置容器
             frame:
                 style_prefix "jyacs_pref"
-                background Frame("gui/overlay/game_menu.png", Borders(10, 10, 10, 10))
+                background "#00000080"
                 padding (20, 15)
                 xsize 800
                 
@@ -832,26 +405,9 @@ init -500 screen preferences():
                         style "jyacs_pref_label"
                         text_style "jyacs_pref_label_text"
                     
-                    # 状态显示
-                    python:
-                        # 调用函数获取显示文本
-                        api_status_text = jyacs_get_connection_status_display()
-                        queue_length_text = jyacs_get_queue_length_display()
-                    
-                    hbox:
-                        spacing 30
-                        
-                        text "API 状态: [api_status_text]":
-                            style "jyacs_status_text"
-                        
-                        text "消息队列: [queue_length_text]":
-                            style "jyacs_status_text"
-                    
-                    null height 10
-                    
                     # API 配置区域
                     vbox:
-                        spacing 20
+                        spacing 50
                         xfill True
                         
                         # API 密钥
@@ -870,7 +426,7 @@ init -500 screen preferences():
                                 style "jyacs_check_button"
                                 text_style "jyacs_check_button_text"
                                 action Show("jyacs_text_input", 
-                                          prompt_text="请输入 API 密钥:", 
+                                          prompt_text="API 密钥:", 
                                           dict_obj=persistent.jyacs_setting_dict, 
                                           key_name="api_key",
                                           is_password=True)
@@ -893,7 +449,7 @@ init -500 screen preferences():
                                 style "jyacs_check_button"
                                 text_style "jyacs_check_button_text"
                                 action Show("jyacs_text_input", 
-                                          prompt_text="请输入 API 地址:", 
+                                          prompt_text="API 地址:", 
                                           dict_obj=persistent.jyacs_setting_dict, 
                                           key_name="api_url")
                                 xsize 300
@@ -913,14 +469,14 @@ init -500 screen preferences():
                                 style "jyacs_check_button"
                                 text_style "jyacs_check_button_text"
                                 action Show("jyacs_text_input", 
-                                          prompt_text="请输入模型名称:", 
+                                          prompt_text="模型名称:", 
                                           dict_obj=persistent.jyacs_setting_dict, 
                                           key_name="model_name")
                                 xsize 300
                     
-                    null height 10
+                    null height 20
                     
-                    # 快速操作按钮
+                    # 操作按钮
                     hbox:
                         spacing 20
                         
@@ -928,25 +484,15 @@ init -500 screen preferences():
                             style "jyacs_check_button"
                             text_style "jyacs_check_button_text"
                             action Function(jyacs_apply_setting)
-                            xsize 100
+                            xsize 150
+                            text_align 0.5
                         
-                        textbutton "连接":
+                        textbutton "恢复默认":
                             style "jyacs_check_button"
                             text_style "jyacs_check_button_text"
-                            action Function(jyacs_safe_connect)
-                            xsize 100
-                        
-                        textbutton "断开":
-                            style "jyacs_check_button"
-                            text_style "jyacs_check_button_text"
-                            action Function(jyacs_safe_disconnect)
-                            xsize 100
-                        
-                        textbutton "详细设置":
-                            style "jyacs_check_button"
-                            text_style "jyacs_check_button_text"
-                            action Show("jyacs_detailed_settings")
-                            xsize 120
+                            action Function(jyacs_reset_settings)
+                            xsize 150
+                            text_align 0.5
 
     # 版本号显示
     text "v[config.version]":
@@ -989,129 +535,95 @@ init -10 python:
                     except:
                         pass
             
-            renpy.notify("基础设置已保存")
+            renpy.notify("设置已保存")
             return True
             
         except Exception as e:
             renpy.notify("保存设置失败: " + str(e))
             return False
     
-    def jyacs_apply_advanced_setting():
-        """应用高级设置"""
+    def jyacs_reset_settings():
+        """恢复默认设置 - 清除所有API配置"""
         try:
-            # 验证超参数范围
-            temperature = persistent.jyacs_advanced_setting.get('temperature', 0.7)
-            if temperature < 0:
-                persistent.jyacs_advanced_setting['temperature'] = 0.0
-            elif temperature > 2.0:
-                persistent.jyacs_advanced_setting['temperature'] = 2.0
+            # 清除API配置
+            persistent.jyacs_setting_dict['api_key'] = ''
+            persistent.jyacs_setting_dict['api_url'] = ''
+            persistent.jyacs_setting_dict['model_name'] = ''
             
-            top_p = persistent.jyacs_advanced_setting.get('top_p', 0.9)
-            if top_p < 0:
-                persistent.jyacs_advanced_setting['top_p'] = 0.0
-            elif top_p > 1.0:
-                persistent.jyacs_advanced_setting['top_p'] = 1.0
+            # 断开连接
+            if hasattr(store, 'jyacs') and store.jyacs:
+                try:
+                    store.jyacs.close_wss_session()
+                except:
+                    pass
             
-            max_tokens = persistent.jyacs_advanced_setting.get('max_tokens', 2048)
-            if max_tokens < 1:
-                persistent.jyacs_advanced_setting['max_tokens'] = 1
-            elif max_tokens > 4096:
-                persistent.jyacs_advanced_setting['max_tokens'] = 4096
-            
-            frequency_penalty = persistent.jyacs_advanced_setting.get('frequency_penalty', 0.0)
-            if frequency_penalty < 0:
-                persistent.jyacs_advanced_setting['frequency_penalty'] = 0.0
-            elif frequency_penalty > 2.0:
-                persistent.jyacs_advanced_setting['frequency_penalty'] = 2.0
-            
-            presence_penalty = persistent.jyacs_advanced_setting.get('presence_penalty', 0.0)
-            if presence_penalty < 0:
-                persistent.jyacs_advanced_setting['presence_penalty'] = 0.0
-            elif presence_penalty > 2.0:
-                persistent.jyacs_advanced_setting['presence_penalty'] = 2.0
-            
-            # 处理随机种子
-            seed_str = persistent.jyacs_advanced_setting.get('_seed', '0')
-            try:
-                seed = int(seed_str)
-                persistent.jyacs_advanced_setting['seed'] = seed
-            except:
-                persistent.jyacs_advanced_setting['seed'] = 0
-                persistent.jyacs_advanced_setting['_seed'] = '0'
-            
-            renpy.notify("高级设置已保存")
+            renpy.notify("已恢复默认设置")
             return True
             
         except Exception as e:
-            renpy.notify("保存高级设置失败: " + str(e))
+            renpy.notify("恢复默认失败: " + str(e))
             return False
+
+
+# ============================================================================
+# JYACS 游戏内按钮
+# ============================================================================
+
+# JYACS 对话状态变量
+default jyacs_in_chat = False
+
+# JYACS 游戏按钮样式
+init -1 style jyacs_game_button is button:
+    background "#a679ff80"
+    hover_background "#a679ffC0"
+    padding (20, 10)
+    xsize 120
+
+init -1 style jyacs_game_button_text is button_text:
+    font "mod_assets/font/SarasaMonoTC-SemiBold.ttf"
+    size 20
+    color "#fff"
+    hover_color "#fff"
+    text_align 0.5
+    layout "nobreak"
+
+# 退出按钮样式（与JYACS按钮相同的紫色）
+init -1 style jyacs_exit_button is button:
+    background "#a679ff80"
+    hover_background "#a679ffC0"
+    padding (20, 10)
+    xsize 120
+
+init -1 style jyacs_exit_button_text is button_text:
+    font "mod_assets/font/SarasaMonoTC-SemiBold.ttf"
+    size 20
+    color "#fff"
+    hover_color "#fff"
+    text_align 0.5
+    layout "nobreak"
+
+# JYACS 游戏内按钮 - 动态切换
+init -501 screen jyacs_game_button():
+    zorder 100
     
-    def jyacs_apply_all_settings():
-        """应用所有设置"""
-        basic_ok = jyacs_apply_setting()
-        advanced_ok = jyacs_apply_advanced_setting()
-        
-        if basic_ok and advanced_ok:
-            renpy.notify("所有设置已保存")
-        elif basic_ok:
-            renpy.notify("基础设置已保存，高级设置保存失败")
-        elif advanced_ok:
-            renpy.notify("高级设置已保存，基础设置保存失败")
-        else:
-            renpy.notify("设置保存失败")
+    # 在JYACS对话中显示退出按钮
+    if jyacs_in_chat:
+        textbutton "退出":
+            style "jyacs_exit_button"
+            text_style "jyacs_exit_button_text"
+            xalign 0.95
+            yalign 0.15
+            action Jump("jyacs_exit_chat")
     
-    def jyacs_verify_api_config():
-        """验证 API 配置"""
-        try:
-            # 检查必填字段
-            api_key = persistent.jyacs_setting_dict.get('api_key', '')
-            api_url = persistent.jyacs_setting_dict.get('api_url', '')
-            model_name = persistent.jyacs_setting_dict.get('model_name', '')
-            
-            if not api_key:
-                renpy.notify("验证失败: API 密钥为空")
-                return False
-            
-            if not api_url:
-                renpy.notify("验证失败: API 地址为空")
-                return False
-            
-            if not model_name:
-                renpy.notify("警告: 模型名称为空，将使用默认值")
-            
-            # 验证 API 地址格式
-            if not (api_url.startswith('http://') or api_url.startswith('https://') or api_url.startswith('ws://') or api_url.startswith('wss://')):
-                renpy.notify("警告: API 地址格式可能不正确")
-            
-            # 尝试测试连接
-            if hasattr(store, 'jyacs') and store.jyacs:
-                try:
-                    # 保存当前状态
-                    was_connected = store.jyacs.get_status() == "connected"
-                    
-                    # 测试连接
-                    renpy.notify("正在测试连接...")
-                    store.jyacs.close_wss_session()
-                    store.jyacs.init_connect()
-                    
-                    # 等待一小段时间检查连接状态
-                    import time
-                    time.sleep(1)
-                    
-                    if store.jyacs.get_status() == "connected":
-                        renpy.notify("验证成功: API 配置正确")
-                        return True
-                    else:
-                        renpy.notify("验证失败: 无法连接到 API")
-                        return False
-                        
-                except Exception as e:
-                    renpy.notify("验证失败: " + str(e))
-                    return False
-            else:
-                renpy.notify("验证失败: JYACS 未初始化")
-                return False
-                
-        except Exception as e:
-            renpy.notify("验证过程出错: " + str(e))
-            return False
+    # 在游戏主界面（没有对话时）显示JYACS按钮
+    elif not main_menu and not renpy.get_screen("game_menu") and not renpy.get_screen("say"):
+        textbutton "JYACS":
+            style "jyacs_game_button"
+            text_style "jyacs_game_button_text"
+            xalign 0.95
+            yalign 0.15
+            action Jump("submod_jyacs_chat_start")
+
+# 将按钮添加到overlay，使其自动显示
+init python:
+    config.overlay_screens.append("jyacs_game_button")

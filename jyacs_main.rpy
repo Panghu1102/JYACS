@@ -98,6 +98,9 @@ init 5 python:
 
 # 聊天界面标签 - 添加submod_前缀
 label submod_jyacs_chat_start:
+    # 设置JYACS对话状态为True
+    $ jyacs_in_chat = True
+    
     scene jy_bg
     
     python:
@@ -116,8 +119,22 @@ label submod_jyacs_chat_start:
     jump submod_jyacs_talking
 
 label submod_jyacs_chat_end:
+    # 重置JYACS对话状态
+    $ jyacs_in_chat = False
+    
     y "再见！希望我们下次还能聊天。"
     return "normal"
+
+# 退出JYACS对话
+label jyacs_exit_chat:
+    # 重置JYACS对话状态
+    $ jyacs_in_chat = False
+    
+    # 隐藏状态overlay
+    hide screen jyacs_status_overlay
+    
+    # 返回游戏
+    return
 
 # 聊天界面屏幕
 # 状态界面
@@ -132,7 +149,7 @@ init 15 screen jyacs_status_overlay():
             padding (10, 5)
             
             text "思考中..." style "jyacs_console_text"
-    use free_chat_overlay
+    # use free_chat_overlay  # 已移除，功能不存在
 
 
 
