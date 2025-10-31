@@ -101,6 +101,11 @@ label submod_jyacs_chat_start:
     # 设置JYACS对话状态为True
     $ jyacs_in_chat = True
     
+    # 隐藏主屏幕按钮（参考JY原版实现）
+    python:
+        if hasattr(store, 'DisableTalk'):
+            DisableTalk()
+    
     scene jy_bg
     
     python:
@@ -122,6 +127,11 @@ label submod_jyacs_chat_end:
     # 重置JYACS对话状态
     $ jyacs_in_chat = False
     
+    # 恢复主屏幕按钮（参考JY原版实现）
+    python:
+        if hasattr(store, 'EnableTalk'):
+            EnableTalk()
+    
     y "再见！希望我们下次还能聊天。"
     return "normal"
 
@@ -132,6 +142,11 @@ label jyacs_exit_chat:
     
     # 隐藏状态overlay
     hide screen jyacs_status_overlay
+    
+    # 恢复主屏幕按钮（参考JY原版实现）
+    python:
+        if hasattr(store, 'EnableTalk'):
+            EnableTalk()
     
     # 返回游戏
     return
