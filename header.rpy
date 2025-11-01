@@ -108,12 +108,10 @@ init -800 python:
         import copy
         d = copy.deepcopy(persistent.__dict__)
 
-        # 清理MAS特有的数据 - 保留清理逻辑但简化
+        # 清理不需要的数据 - 简化处理
         keys_to_clear = [
-            '_seen_ever', '_mas_event_init_lockdb', '_changed', 'event_database',
-            'farewell_database', 'greeting_database', '_mas_apology_database',
-            'mas_compliments_database', '_mas_fun_facts_database', '_mas_mood_database',
-            '_mas_songs_database', '_mas_story_database', '_mas_affection_backups'
+            '_seen_ever', '_changed', 'event_database',
+            'farewell_database', 'greeting_database'
         ]
 
         for key in keys_to_clear:
@@ -588,7 +586,7 @@ init 10 python:
             "show_console_when_reply": False,
             "mpostal_default_reply_time": 60*60*12,
             "42seed": False,
-            "use_anim_background": False  # 移除MAS特有的动态背景
+            "use_anim_background": False  # 不使用动态背景
         }
     else:
         # 使用jyacs模块的值
@@ -616,7 +614,7 @@ init 10 python:
             "show_console_when_reply": False,
             "mpostal_default_reply_time": 60*60*12,
             "42seed": False,
-            "use_anim_background": False  # 移除MAS特有的动态背景
+            "use_anim_background": False  # 不使用动态背景
         }
 
     # 高级设置
@@ -735,12 +733,6 @@ screen jyacs_setting_pane():
             
             textbutton _("> 上传对话历史到会话 '[store.jyacs.jyacs.chat_session]' "):
                 action Function(upload_chat_history)
-
-            textbutton renpy.substitute(_("> 退出当前DCC账号")) + " " + renpy.substitute(_("{size=-10}* 如果对话卡住了, 点我断开连接")):
-                action Function(store.jyacs.jyacs.close_wss_session)
-
-        else:
-            textbutton _("> 使用已保存令牌连接")
     
         textbutton _("> JYACS对话设置 {size=-10}*部分选项重新连接生效"):
             action Show("jyacs_setting")
@@ -1314,7 +1306,7 @@ screen jyacs_advance_setting():
                     hbox:
                         textbutton "tnd_aggressive":
                             action ToggleDict(persistent.jyacs_advanced_setting_status, "tnd_aggressive")
-                            hovered SetField(_tooltip, "value", _("当其为0时只调用MFocus直接选择的工具. 为1时总是会调用时间与节日工具. 为2时还会额外调用日期工具.\n当其为2且mas_geolocation存在时, tnd_aggressive还会额外调用当前天气工具.\n越高越可能补偿MFocus命中率低下的问题, 但也越可能会干扰模型对部分问题的判断."))
+                            hovered SetField(_tooltip, "value", _("当其为0时只调用MFocus直接选择的工具. 为1时总是会调用时间与节日工具. 为2时还会额外调用日期工具.\n越高越可能补偿MFocus命中率低下的问题, 但也越可能会干扰模型对部分问题的判断."))
                             unhovered SetField(_tooltip, "value", _tooltip.default)
                         
                         if persistent.jyacs_advanced_setting_status.get("tnd_aggressive", False):
@@ -1461,10 +1453,10 @@ screen jyacs_setting():
                                 except:
                                     return 0
                                     
-                            # 检查mas_rev_unseen是否存在
-                            has_rev_unseen = hasattr(store, 'mas_rev_unseen')
-                            rev_unseen_len = safe_len(getattr(store, 'mas_rev_unseen', []))
-                            rev_unseen_str = str(getattr(store, 'mas_rev_unseen', []))
+                            # 检查jy_rev_unseen是否存在
+                            has_rev_unseen = hasattr(store, 'jy_rev_unseen')
+                            rev_unseen_len = safe_len(getattr(store, 'jy_rev_unseen', []))
+                            rev_unseen_str = str(getattr(store, 'jy_rev_unseen', []))
                             
                             # 安全的邮件检查函数
                             def safe_mail_check():
@@ -1485,8 +1477,8 @@ screen jyacs_setting():
                                     # 安全地检查事件状态
                                     event_checks = []
                                     for event in ['jyacs_mpostal_received', 'jyacs_mpostal_read']:
-                                        if hasattr(store, 'mas_inEVL'):
-                                            event_checks.append(not store.mas_inEVL(event))
+                                        if hasattr(store, 'jy_inEVL'):
+                                            event_checks.append(not store.jy_inEVL(event))
                                         else:
                                             event_checks.append(True)
                                     
@@ -1500,7 +1492,7 @@ screen jyacs_setting():
                                     # 安全地检查标签是否存在
                                     greeting_check = renpy.has_label('jyacs_greeting') and renpy.seen_label('jyacs_greeting')
                                     mspire_check = not (renpy.has_label('jyacs_wants_mspire') and renpy.seen_label('jyacs_wants_mspire'))
-                                    random_ask_check = renpy.has_label('mas_random_ask') and renpy.seen_label('mas_random_ask')
+                                    random_ask_check = renpy.has_label('jy_random_ask') and renpy.seen_label('jy_random_ask')
                                     
                                     return greeting_check and mspire_check and random_ask_check
                                 except:
@@ -1527,9 +1519,9 @@ screen jyacs_setting():
                             def safe_push_event(event_name):
                                 """安全地推送事件"""
                                 try:
-                                    # 如果MASEventList存在，使用它
-                                    if hasattr(store, 'MASEventList') and hasattr(store.MASEventList, 'push'):
-                                        store.MASEventList.push(event_name)
+                                    # 如果JYEventList存在，使用它
+                                    if hasattr(store, 'JYEventList') and hasattr(store.JYEventList, 'push'):
+                                        store.JYEventList.push(event_name)
                                     # 否则尝试使用renpy.jump
                                     elif renpy.has_label(event_name):
                                         renpy.hide_screen("jyacs_setting")
@@ -1668,11 +1660,11 @@ screen jyacs_setting():
                             hovered SetField(_tooltip, "value", _("在对话期间是否使用console显示相关信息"))
                             unhovered SetField(_tooltip, "value", _tooltip.default)
 
-                        # 定义默认等宽字体，避免依赖mas_ui
+                        # 定义默认等宽字体，使用JY UI配置
                         python:
-                            default_mono_font = "DejaVuSansMono.ttf"
-                            if hasattr(store, 'mas_ui') and hasattr(store.mas_ui, 'MONO_FONT'):
-                                default_mono_font = store.mas_ui.MONO_FONT
+                            default_mono_font = "mod_assets/font/SarasaMonoTC-SemiBold.ttf"
+                            if hasattr(store, 'jy_ui') and hasattr(store.jy_ui, 'MONO_FONT'):
+                                default_mono_font = store.jy_ui.MONO_FONT
                                 
                         textbutton _("控制台字体: [persistent.jyacs_setting_dict.get('console_font')] "):
                             action ToggleDict(persistent.jyacs_setting_dict, "console_font", store.jyacs_confont, default_mono_font)
@@ -1737,8 +1729,8 @@ screen jyacs_setting():
                             """安全获取日志级别"""
                             import logging
                             try:
-                                if hasattr(store, 'mas_submod_utils') and hasattr(store.mas_submod_utils, 'submod_log'):
-                                    return logging.getLevelName(store.mas_submod_utils.submod_log.level)
+                                if hasattr(store, 'jy_submod_utils') and hasattr(store.jy_submod_utils, 'submod_log'):
+                                    return logging.getLevelName(store.jy_submod_utils.submod_log.level)
                                 else:
                                     return "INFO"
                             except:
@@ -1812,84 +1804,7 @@ screen jyacs_setting():
                 
                  
 
-default use_email = True
-screen jyacs_login():
-    modal True
-    zorder 215
-
-    style_prefix "confirm"
-
-    frame:
-        vbox:
-            xfill False
-            yfill False
-            spacing 5
-
-            hbox:
-                style_prefix "check"
-                if use_email:
-                    textbutton _("改为用户名登录"):
-                        action [ToggleVariable("use_email"), Function(_jyacs_clear)]
-                        selected False
-
-                else:
-                    textbutton _("改为邮箱登录"):
-                        action [ToggleVariable("use_email"), Function(_jyacs_clear)]
-                        selected False
-                        
-            hbox:
-                if use_email:
-                    textbutton _("输入 DCC 账号邮箱"):
-                        action Show("jyacs_login_input",message = _("请输入DCC 账号邮箱"),returnto = "_jyacs_LoginEmail")
-                else:
-                    textbutton _("输入 DCC 账号用户名"):
-                        action Show("jyacs_login_input",message = _("请输入DCC 账号用户名") ,returnto = "_jyacs_LoginAcc")
-
-            hbox:
-                textbutton _("输入 DCC 账号密码"):
-                    action Show("jyacs_login_input",message = _("请输入DCC 账号密码"),returnto = "_jyacs_LoginPw")
-            hbox:
-                text ""
-            hbox:
-                textbutton _("连接至服务器生成JYACS令牌"):
-                    action [
-                        Function(store.jyacs.jyacs._gen_token, store._jyacs_LoginAcc, store._jyacs_LoginPw, "", store._jyacs_LoginEmail if store._jyacs_LoginEmail != "" else None),
-                        Function(_jyacs_verify_token),
-                        Function(_jyacs_clear), 
-                        Hide("jyacs_login")
-                        ]
-                textbutton _("取消"):
-                    action [Function(_jyacs_clear), Hide("jyacs_login")]
-            hbox:
-                text _("{size=-10}※ 使用JYACS，即认为你同意服务条款")
-            hbox:
-                text _("{size=-10}※ 访问 https://github.com/Panghu1102/JYACS 了解更多")
-
-screen jyacs_login_input(message, returnto, ok_action = Hide("jyacs_login_input")):
-    modal True
-    zorder 225
-
-    style_prefix "confirm"
-
-    frame:
-        vbox:
-            ymaximum 300
-            xmaximum 800
-            xfill True
-            yfill False
-            spacing 5
-
-            label _(message):
-                style "confirm_prompt"
-                xalign 0.5
-            hbox:
-                input default "" value VariableInputValue(returnto) length 64
-
-            hbox:
-                xalign 0.5
-                spacing 100
-
-                textbutton _("OK") action ok_action
+# DCC登录相关的screen已移除，现在使用设置中的API配置
 
 screen jyacs_seed_input():
     python:
@@ -2057,20 +1972,7 @@ screen jyacs_outdated_notice():
             text _("> 你当前的生成版本过旧, 可能影响正常运行, 请升级至最新生成版本")
             textbutton _("确定") action Return()
 
-# 添加在文件的适当位置，例如在init -1500 python块之后
-init -999 python:
-    # 定义清理函数，避免未定义错误
-    def _jyacs_clear():
-        """清理登录信息"""
-        if not hasattr(store, '_jyacs_LoginAcc'):
-            store._jyacs_LoginAcc = ""
-        if not hasattr(store, '_jyacs_LoginPw'):
-            store._jyacs_LoginPw = ""
-        if not hasattr(store, '_jyacs_LoginEmail'):
-            store._jyacs_LoginEmail = ""
-        store._jyacs_LoginAcc = ""
-        store._jyacs_LoginPw = ""
-        store._jyacs_LoginEmail = ""
+# DCC登录相关的函数已移除，现在使用设置中的API配置
 
 # 样式定义
 init 20 python:

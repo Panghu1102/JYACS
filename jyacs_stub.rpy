@@ -48,20 +48,19 @@ init -1500 python:
         store.jyacs_submod_utils.isSubmodInstalled = lambda name: False
 
     # ------------------------------------------------------------------
-    # Alias MAS symbols to the same stub so any residual MAS references
-    # won't break the build. ------------------------------------------------
+    # 创建JY相关的命名空间，替代MAS依赖
     # ------------------------------------------------------------------
-    if not hasattr(store, "mas_submod_utils"):
-        store.mas_submod_utils = store.jyacs_submod_utils
+    if not hasattr(store, "jy_submod_utils"):
+        store.jy_submod_utils = store.jyacs_submod_utils
 
-    # Provide dummy objects occasionally accessed by legacy MAS code
-    if not hasattr(store, "mas_ptod"):
-        store.mas_ptod = SimpleNamespace()
-        store.mas_ptod.font = None
+    # 提供JY相关的UI对象
+    if not hasattr(store, "jy_ptod"):
+        store.jy_ptod = SimpleNamespace()
+        store.jy_ptod.font = "mod_assets/font/SarasaMonoTC-SemiBold.ttf"
 
-    if not hasattr(store, "mas_ui"):
-        store.mas_ui = SimpleNamespace()
-        store.mas_ui.MONO_FONT = "DejaVuSansMono.ttf"
+    if not hasattr(store, "jy_ui"):
+        store.jy_ui = SimpleNamespace()
+        store.jy_ui.MONO_FONT = "mod_assets/font/SarasaMonoTC-SemiBold.ttf"
 
 # 确保游戏标题正确设置，使用更低的优先级
 init -1600 python:
@@ -84,21 +83,21 @@ init -1400 python:
     if not hasattr(store, "getAPIKey"):
         store.getAPIKey = lambda *_args, **_kwargs: ""
 
-    # Common MAS helper symbols occasionally referenced -------------------
-    mas_helpers = {
-        "_mas_getAffection": (lambda *_a, **_k: 0),
-        "mas_getAffection": (lambda *_a, **_k: 0),
-        "mas_getEV": (lambda *_a, **_k: None),
-        "mas_inEVL": (lambda *_a, **_k: False),
+    # JY辅助函数，替代MAS依赖 -------------------
+    jy_helpers = {
+        "_jy_getAffection": (lambda *_a, **_k: 0),
+        "jy_getAffection": (lambda *_a, **_k: 0),
+        "jy_getEV": (lambda *_a, **_k: None),
+        "jy_inEVL": (lambda *_a, **_k: False),
     }
     
-    # Add each helper to store if it doesn't exist
-    for _name, _default in mas_helpers.items():
+    # 将每个辅助函数添加到store中
+    for _name, _default in jy_helpers.items():
         if not hasattr(store, _name):
             setattr(store, _name, _default)
 
-    if not hasattr(store, "mas_rev_unseen"):
-        store.mas_rev_unseen = []
+    if not hasattr(store, "jy_rev_unseen"):
+        store.jy_rev_unseen = []
         
     if not hasattr(store, "player"):
         store.player = "Player"

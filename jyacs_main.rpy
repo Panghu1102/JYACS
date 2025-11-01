@@ -86,11 +86,6 @@ init 5 python:
 
 # 错误处理
 init 5 python:
-    def handle_mspire_error():
-        """处理MSpire错误"""
-        renpy.say("优里", "MSpire暂时无法使用。")
-        return "error"
-    
     def handle_mail_error():
         """处理邮件错误"""
         renpy.say("优里", "邮件处理暂时无法使用。")
@@ -106,7 +101,8 @@ label submod_jyacs_chat_start:
         if hasattr(store, 'DisableTalk'):
             DisableTalk()
     
-    scene jy_bg
+    # 不强制设置背景，使用原游戏的jy_bg动态背景系统
+    # 原游戏会根据bg_list和current_timecycle_marker自动显示正确的背景
     
     python:
         # 重置退出请求标志
@@ -118,8 +114,8 @@ label submod_jyacs_chat_start:
     
     # 使用JUSTYURI表情系统显示默认表情
     $ show_chr("A-ACAAA-AAAA")
-    y "你好！我是优里，很高兴见到你。"
-    y "我们可以开始聊天了。"
+    y "啊，要聊些话题吗....稍等一下"
+    y "我准备好啦！。"
     
     jump submod_jyacs_talking
 
@@ -132,7 +128,7 @@ label submod_jyacs_chat_end:
         if hasattr(store, 'EnableTalk'):
             EnableTalk()
     
-    y "再见！希望我们下次还能聊天。"
+    y "就这样吧，有什么欢迎随时找我。"
     return "normal"
 
 # 退出JYACS对话
@@ -170,31 +166,6 @@ init 15 screen jyacs_status_overlay():
 
 
 
-# MSpire功能 - 添加submod_前缀
-label submod_jyacs_mspire:
-    python:
-        store.jyacs_mspire_response = None
-        if hasattr(store, 'jyacs') and hasattr(store.jyacs, 'is_ready_to_input') and store.jyacs.is_ready_to_input:
-            if hasattr(store.jyacs, 'start_MSpire'):
-                store.jyacs.start_MSpire()
-                if hasattr(store.jyacs, 'get_message'):
-                    response_data = store.jyacs.get_message()
-                    if response_data:
-                        emote, response_text = response_data
-                        if hasattr(store, 'emotion_analyzer'):
-                            analyzed_text, final_emote = store.emotion_analyzer.analyze_text_emotion(response_text)
-                        else:
-                            analyzed_text, final_emote = response_text, emote
-                        store.jyacs_mspire_response = (final_emote, analyzed_text)
-
-    if store.jyacs_mspire_response:
-        $ emote, text = store.jyacs_mspire_response
-        show yuri [emote]
-        y "[text]"
-    else:
-        y "MSpire暂时无法使用。"
-    return "normal"
-
 # 邮件功能 - 添加submod_前缀
 label submod_jyacs_mpostal_read:
     python:
@@ -218,7 +189,7 @@ label submod_jyacs_mpostal_read:
     return "normal"
 
 # 修改主聊天功能 - 添加submod_前缀
-label submod_jyacs_talking(mspire=False):
+label submod_jyacs_talking:
     show yuri at t11
     
     show screen jyacs_status_overlay
@@ -238,10 +209,6 @@ label submod_jyacs_talking(mspire=False):
         # 设置日志记录器
         store.jyacs.content_func = store.jyacs_log
         store.action = {}
-        
-        if mspire:
-            store.jyacs_log("<submod> MSpire init...", "INFO")
-            renpy.pause(2.3)
         
         printed = False
         is_retry_before_sendmessage = False
@@ -286,115 +253,111 @@ label submod_jyacs_talking(mspire=False):
                 break
             
             if store.jyacs.is_ready_to_input:
-                if not mspire:
-                    if "stop" in store.action:
-                        if store.action["stop"]:
-                            store.action = {}
-                            _return = "canceled"
-                            break
+                if store.action.get("stop", False):
+                    store.action = {}
+                    _return = "canceled"
+                    break
+                
+                # ========== 状态验证（新增） ==========
+                store.jyacs_log("准备获取用户输入，验证状态...", "DEBUG")
+                
+                # 验证次数计数器
+                validation_attempts = 0
+                max_validation_attempts = 3
+                
+                while validation_attempts < max_validation_attempts:
+                    validation_attempts += 1
                     
-                    # ========== 状态验证（新增） ==========
-                    store.jyacs_log("准备获取用户输入，验证状态...", "DEBUG")
+                    # 检查状态是否正确
+                    is_valid = True
                     
-                    # 验证次数计数器
-                    validation_attempts = 0
-                    max_validation_attempts = 3
+                    if store.jyacs.is_responding:
+                        store.jyacs_log("验证失败：is_responding 应为 False 但为 True", "WARNING")
+                        is_valid = False
                     
-                    while validation_attempts < max_validation_attempts:
-                        validation_attempts += 1
-                        
-                        # 检查状态是否正确
-                        is_valid = True
-                        
-                        if store.jyacs.is_responding:
-                            store.jyacs_log("验证失败：is_responding 应为 False 但为 True", "WARNING")
-                            is_valid = False
-                        
-                        if store.jyacs.is_chatting:
-                            store.jyacs_log("验证失败：is_chatting 应为 False 但为 True", "WARNING")
-                            is_valid = False
-                        
-                        if len(store.jyacs.message_queue) > 0:
-                            store.jyacs_log("验证失败：message_queue 应为空但有 {} 条消息".format(
-                                len(store.jyacs.message_queue)
-                            ), "WARNING")
-                            is_valid = False
-                        
-                        if is_valid:
-                            store.jyacs_log("状态验证通过（尝试 {}/{}）".format(
-                                validation_attempts, max_validation_attempts
-                            ), "DEBUG")
-                            break
-                        else:
-                            # 尝试修复
-                            store.jyacs_log("尝试修复状态（尝试 {}/{}）...".format(
-                                validation_attempts, max_validation_attempts
-                            ), "WARNING")
-                            
-                            store.jyacs.is_responding = False
-                            store.jyacs.is_chatting = False
-                            store.jyacs.message_queue = []
-                            
-                            # 等待状态同步
-                            renpy.pause(0.2, hard=True)
+                    if store.jyacs.is_chatting:
+                        store.jyacs_log("验证失败：is_chatting 应为 False 但为 True", "WARNING")
+                        is_valid = False
                     
-                    if validation_attempts >= max_validation_attempts:
-                        store.jyacs_log("状态验证失败，连续 {} 次尝试后仍无法修复".format(
-                            max_validation_attempts
-                        ), "ERROR")
-                        store.jyacs_log("强制退出对话循环", "ERROR")
-                        _return = "state_validation_failed"
+                    if len(store.jyacs.message_queue) > 0:
+                        store.jyacs_log("验证失败：message_queue 应为空但有 {} 条消息".format(
+                            len(store.jyacs.message_queue)
+                        ), "WARNING")
+                        is_valid = False
+                    
+                    if is_valid:
+                        store.jyacs_log("状态验证通过（尝试 {}/{}）".format(
+                            validation_attempts, max_validation_attempts
+                        ), "DEBUG")
                         break
-                    # ========== 状态验证结束 ==========
-                    
-                    # 获取用户输入 - 使用标准Renpy对话输入
-                    store.jyacs_log("="*60, "DEBUG")
-                    store.jyacs_log("状态验证通过，准备获取用户输入", "DEBUG")
-                    store.jyacs_log("即将调用 renpy.input()，当前时间: {}".format(time.time()), "DEBUG")
-                    
-                    # 关键修复：强制刷新 Ren'Py 交互状态
-                    # 这确保之前的 y() 调用完全结束，事件循环已经恢复
-                    store.jyacs_log("刷新交互状态...", "DEBUG")
-                    renpy.restart_interaction()
-                    
-                    store.jyacs_log("="*60, "DEBUG")
-                    question = renpy.input(
-                        _("说吧, [persistent.playername]"),
-                        default="",
-                        length=75 if not config.language == "english" else 375
-                    ).strip(' \t\n\r')
-                    
-                    store.jyacs_log("="*60, "DEBUG")
-                    store.jyacs_log("renpy.input() 已返回，用户输入: '{}'".format(question), "DEBUG")
-                    store.jyacs_log("当前时间: {}".format(time.time()), "DEBUG")
-                    store.jyacs_log("="*60, "DEBUG")
-                    
-                    if question == "":
-                        store.jyacs_log("用户输入为空，继续循环", "DEBUG")
-                        continue
-                    if question == "nevermind":
-                        _return = "canceled"
-                        store.jyacs.content_func = None
-                        break
-                    
-                    # 添加到历史记录
-                    to_history = copy.deepcopy(_history_list[-1])
-                    to_history.who = persistent.playername
-                    to_history.what = question
-                    _history_list.append(to_history)
-                    
-                    # 发送消息
-                    store.jyacs_log("="*60, "DEBUG")
-                    store.jyacs_log("准备发送消息到 API: '{}'".format(question[:50] if len(question) > 50 else question), "DEBUG")
-                    store.jyacs.chat(question)
-                    store.jyacs_log("API 调用已返回", "DEBUG")
-                    store.jyacs_log("当前状态: is_responding={}, is_chatting={}, len_message_queue={}".format(
-                        store.jyacs.is_responding, store.jyacs.is_chatting, store.jyacs.len_message_queue
-                    ), "DEBUG")
-                    store.jyacs_log("="*60, "DEBUG")
-                    is_retry_before_sendmessage = False
-                else:
-                    store.jyacs.start_MSpire()
+                    else:
+                        # 尝试修复
+                        store.jyacs_log("尝试修复状态（尝试 {}/{}）...".format(
+                            validation_attempts, max_validation_attempts
+                        ), "WARNING")
+                        
+                        store.jyacs.is_responding = False
+                        store.jyacs.is_chatting = False
+                        store.jyacs.message_queue = []
+                        
+                        # 等待状态同步
+                        renpy.pause(0.2, hard=True)
+                
+                if validation_attempts >= max_validation_attempts:
+                    store.jyacs_log("状态验证失败，连续 {} 次尝试后仍无法修复".format(
+                        max_validation_attempts
+                    ), "ERROR")
+                    store.jyacs_log("强制退出对话循环", "ERROR")
+                    _return = "state_validation_failed"
+                    break
+                # ========== 状态验证结束 ==========
+                
+                # 获取用户输入 - 使用标准Renpy对话输入
+                store.jyacs_log("="*60, "DEBUG")
+                store.jyacs_log("状态验证通过，准备获取用户输入", "DEBUG")
+                store.jyacs_log("即将调用 renpy.input()，当前时间: {}".format(time.time()), "DEBUG")
+                
+                # 关键修复：强制刷新 Ren'Py 交互状态
+                # 这确保之前的 y() 调用完全结束，事件循环已经恢复
+                store.jyacs_log("刷新交互状态...", "DEBUG")
+                renpy.restart_interaction()
+                
+                store.jyacs_log("="*60, "DEBUG")
+                question = renpy.input(
+                    _("[persistent.playername]，说吧。"),
+                    default="",
+                    length=75 if not config.language == "english" else 375
+                ).strip(' \t\n\r')
+                
+                store.jyacs_log("="*60, "DEBUG")
+                store.jyacs_log("renpy.input() 已返回，用户输入: '{}'".format(question), "DEBUG")
+                store.jyacs_log("当前时间: {}".format(time.time()), "DEBUG")
+                store.jyacs_log("="*60, "DEBUG")
+                
+                if question == "":
+                    store.jyacs_log("用户输入为空，继续循环", "DEBUG")
+                    continue
+                if question == "nevermind":
+                    _return = "canceled"
+                    store.jyacs.content_func = None
+                    break
+                
+                # 添加到历史记录
+                to_history = copy.deepcopy(_history_list[-1])
+                to_history.who = persistent.playername
+                to_history.what = question
+                _history_list.append(to_history)
+                
+                # 发送消息
+                store.jyacs_log("="*60, "DEBUG")
+                store.jyacs_log("准备发送消息到 API: '{}'".format(question[:50] if len(question) > 50 else question), "DEBUG")
+                store.jyacs.chat(question)
+                store.jyacs_log("API 调用已返回", "DEBUG")
+                store.jyacs_log("当前状态: is_responding={}, is_chatting={}, len_message_queue={}".format(
+                    store.jyacs.is_responding, store.jyacs.is_chatting, store.jyacs.len_message_queue
+                ), "DEBUG")
+                store.jyacs_log("="*60, "DEBUG")
+                is_retry_before_sendmessage = False
             
             elif not store.jyacs.is_connected and persistent.jyacs_setting_dict['auto_reconnect']:
                 store.jyacs.init_connect()
@@ -534,12 +497,6 @@ label submod_jyacs_talking(mspire=False):
             
             if store.action.get('stop', False):
                 _return = "canceled"
-                break
-            
-            if mspire:
-                _return = "canceled"
-                afm_pref = renpy.game.preferences.afm_enable
-                renpy.game.preferences.afm_enable = False
                 break
             
             # ========== 状态重置和验证（增强版） ==========

@@ -36,7 +36,7 @@ init -1650 python:
             "auto_connect": True, "auto_reconnect": True, "enable_triggers": True,
             "enable_emotion": True, "show_console_when_reply": False,
             "target_lang": "zh_cn", "use_custom_model_config": False,
-            "mspire_enable": True, "strict_mode": False,
+            "strict_mode": False,
             "log_level": "INFO", "log_conlevel": "INFO"
         }
     

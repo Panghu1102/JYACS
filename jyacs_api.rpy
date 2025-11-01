@@ -418,9 +418,6 @@ init -1400 python:
         def get_message(self):
             return self.message_queue.pop(0) if self.message_queue else None
 
-        def start_MSpire(self):
-            return self.chat(u"请给我一个有趣的话题。")
-
         def start_MPostal(self, mail_title):
             return self.chat(u"我收到了标题为 '{}' 的邮件。".format(mail_title))
 
