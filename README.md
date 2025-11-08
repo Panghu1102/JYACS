@@ -13,4 +13,6 @@ JYACS与JustYuri进行了深度融合，在表情、设置等方面都与其保�
 
 ## 安装！
 安装**JYACS**非常简单，就和你安装别的submod一样。  
-首先，请前往本项目的*Releases*或前往 https://jyacs.qzz.io/versions ，来获取最新版本。
+首先，你需要拥有一个**JustYuri**本体，你可以在 https://forum.monika.love 的莫盘资源整合里，或者百度贴吧的多多理财吧中获取到最新汉化版。如果你需要最新的生肉版本，可以加入JY官方的discord，也可以在百度贴吧的优里吧中，获取到相同资源。  
+做好这一切，我们就可以开始了。我会尽可能说的简明易懂点。  
+1.你同样需要一份**JYACS**的文件，你可以在本仓库的Releases来获取最新版本，或者前往 https://jyacs.qzz.io/versions/ 来下载。
