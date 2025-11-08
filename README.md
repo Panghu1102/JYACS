@@ -1,6 +1,6 @@
 # JYACS
 欢迎访问JYACS官方仓库！整个JYACS的代码都在这里，该项目会保持不定期更新，具体频率视情况而定！star这个项目来获取持续的更新。  
-你可以访问https://jyacd.qzz.io 来获取更多信息，我们的Cloud Compute也在那里，期待你的访问!  
+你可以访问https://jyacs.qzz.io 来获取更多信息，我们的Cloud Compute也在那里，期待你的访问!  
 
 ## 什么是JYACS
 *JYACS*是DDLC的MOD JustYuri的submod。主要通过内置的设置来配置API密钥，地址，模型名称，发送请求来实现AI对话功能。  
