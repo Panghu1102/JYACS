@@ -13,4 +13,4 @@ JYACS与JustYuri进行了深度融合，在表情、设置等方面都与其保�
 
 ## 安装！
 安装**JYACS**非常简单，就和你安装别的submod一样。  
-首先，请前往本项目的*Releases*或前往*https://jyacs.qzz.io/versions*，来获取最新版本。
+首先，请前往本项目的*Releases*或前往*https://jyacs.qzz.io/versions *，来获取最新版本。
