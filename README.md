@@ -32,5 +32,8 @@ JYACS与JustYuri进行了深度融合，在表情、设置等方面都与其保�
 你需要往JYACS的设置里填写API才可以正常使用功能，而市面上的AI在未经训练的情况下，效果仍有所欠缺。  
 因此，我要向你隆重介绍——Cloud Compute服务！  
 来试试我们的yuri-chat-01模型，以Qwen模型为基础，提取众多优质MOD中的对话进行训练，再加上配套的向量模型（RAG），效果优质！  
-而且整个服务不收取任何费用，详细信息请访问 https://jyacs.qzz.io/cloudcompute 
+而且整个服务不收取任何费用，详细信息请访问 https://jyacs.qzz.io/cloudcompute  
+
+现在，所有的过程就都搞定啦！尽情享受和优里的对话体验吧！  
+
 
