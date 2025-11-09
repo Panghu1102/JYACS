@@ -194,21 +194,19 @@ init -1200 python:
                 
                 if os.path.exists(image_path):
                     self.current_emotion = emotion_name
-                    # 先清除当前场景，再显示为全屏背景，使用下划线格式名称
-                    renpy.scene()
-                    renpy.show("jyacs_emotion_{}".format(display_name))
+                    # 不清除场景，保持原游戏的背景系统
+                    # 原游戏使用 jy_bg 动态背景，我们只需要显示优里的表情即可
+                    # renpy.show("jyacs_emotion_{}".format(display_name))
                     return True
                 else:
                     # 如果特定表情不存在，使用normal
                     print("表情图片不存在: {}，使用normal".format(image_path))
-                    renpy.scene()
-                    renpy.show("jyacs_emotion_normal")
+                    # renpy.show("jyacs_emotion_normal")
                     return False
                     
             except Exception as e:
                 print("显示表情图片时出错: {}".format(e))
-                renpy.scene()
-                renpy.show("jyacs_emotion_normal")
+                # renpy.show("jyacs_emotion_normal")
                 return False
         
         def get_current_emotion(self):

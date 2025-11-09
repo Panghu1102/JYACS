@@ -1804,7 +1804,7 @@ screen jyacs_setting():
                 
                  
 
-# 使用设置中的API配置
+# DCC登录相关的screen已移除，现在使用设置中的API配置
 
 screen jyacs_seed_input():
     python:
@@ -1972,7 +1972,7 @@ screen jyacs_outdated_notice():
             text _("> 你当前的生成版本过旧, 可能影响正常运行, 请升级至最新生成版本")
             textbutton _("确定") action Return()
 
-# 现在使用设置中的API配置
+# DCC登录相关的函数已移除，现在使用设置中的API配置
 
 # 样式定义
 init 20 python:

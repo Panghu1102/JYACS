@@ -2,7 +2,8 @@
 # 版本: 1.0.0
 # 作者: Panghu1102
 
-image jy_bg = "mod_assets/images/jy_bg.png"
+# 移除强制背景设置，使用原游戏的jy_bg动态背景系统
+# 原游戏会根据persistent.bg、bg_list和current_timecycle_marker自动显示正确的背景
 
 # 样式定义 - 降低优先级
 init 50 python:
@@ -100,6 +101,9 @@ label submod_jyacs_chat_start:
     python:
         if hasattr(store, 'DisableTalk'):
             DisableTalk()
+        
+        # 禁用boopable（参考俄罗斯方块的实现）
+        boopable = False
     
     # 不强制设置背景，使用原游戏的jy_bg动态背景系统
     # 原游戏会根据bg_list和current_timecycle_marker自动显示正确的背景
@@ -127,9 +131,17 @@ label submod_jyacs_chat_end:
     python:
         if hasattr(store, 'EnableTalk'):
             EnableTalk()
+        
+        # 恢复boopable状态
+        boopable = True
+        
+        # 确保yuri_sit变量正确设置（使用默认表情）
+        show_chr("A-ACAAA-AAAA")
     
     y "就这样吧，有什么欢迎随时找我。"
-    return "normal"
+    
+    # 返回主循环（参考俄罗斯方块的实现）
+    jump ch30_loop
 
 # 退出JYACS对话
 label jyacs_exit_chat:
@@ -139,13 +151,20 @@ label jyacs_exit_chat:
     # 隐藏状态overlay
     hide screen jyacs_status_overlay
     
-    # 恢复主屏幕按钮（参考JY原版实现）
+    # 恢复主屏幕按钮和默认状态（参考JY原版实现）
     python:
+        # 恢复按钮显示
         if hasattr(store, 'EnableTalk'):
             EnableTalk()
+        
+        # 重置boopable状态
+        boopable = True
+        
+        # 确保yuri_sit变量正确设置（使用默认表情）
+        show_chr("A-ACAAA-AAAA")
     
-    # 返回游戏
-    return
+    # 返回主循环（参考俄罗斯方块的实现）
+    jump ch30_loop
 
 # 聊天界面屏幕
 # 状态界面

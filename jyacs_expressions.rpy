@@ -151,10 +151,8 @@ init -1200 python:
             
             # 显示表情图像
             # 在JYACS中，我们使用简化的方式显示表情
-            # 将表情编码转换为情绪名称，并显示对应的图像
-            emotion_name = "jyacs_emotion_" + get_emotion_from_expression()
-            renpy.scene()
-            renpy.show(emotion_name)
+            # 不清除场景，保持原游戏的背景系统
+            # 原游戏使用 jy_bg 动态背景，我们只需要显示优里的表情即可
             
             return yuri_display
     
