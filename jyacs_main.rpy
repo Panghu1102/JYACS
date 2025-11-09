@@ -1,7 +1,7 @@
 # jyacs_main.rpy - JYACS 主要游戏脚本
 # 版本: 1.0.0
 # 作者: Panghu1102
-
+# 你会发现哈，如果细致研究的话，里面有些功能是没法用的，这是因为当时参考了maica....E佬原谅我（可怜）
 # 移除强制背景设置，使用原游戏的jy_bg动态背景系统
 # 原游戏会根据persistent.bg、bg_list和current_timecycle_marker自动显示正确的背景
 
@@ -61,7 +61,7 @@ init 5 python:
         """显示优里的表情"""
         # 使用JUSTYURI表情系统
         if emote.startswith("1"):
-            # 将DDLC风格的表情代码转换为JUSTYURI表情编码
+            # 将DDLC风格的表情代码转换为JUSTYURI表情编码,这里表情比较少，会加的
             ddlc_to_justyuri = {
                 "1eua": "A-ACAAA-AAAA",  # 正常/平静
                 "1esa": "A-ADCAA-AAAA",  # 悲伤
@@ -85,7 +85,7 @@ init 5 python:
             # 直接使用JUSTYURI表情编码
             show_chr(emote)
 
-# 错误处理
+# 错误处理.....此功能无法使用哈，从maica里看到整过来的，往后也许会兼容
 init 5 python:
     def handle_mail_error():
         """处理邮件错误"""
@@ -185,7 +185,7 @@ init 15 screen jyacs_status_overlay():
 
 
 
-# 邮件功能 - 添加submod_前缀
+# 邮件功能 - 添加submod_前缀，也是，无法使用现在
 label submod_jyacs_mpostal_read:
     python:
         store.jyacs_mpostal_response = None

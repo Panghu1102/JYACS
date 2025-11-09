@@ -1,5 +1,5 @@
-# jyacs_stub.rpy – Compatibility stubs for running JYACS sub-mod inside Just Yuri without Monika-After-Story dependencies.
-# This file provides compatibility layer while respecting the main game's configuration.
+# jyacs_stub.rpy – JYACS依赖
+# 开发人员注意，这玩意是为了兼容jy写的，不是必要的开发文件，如果你想做jn或者fae的话
 
 # 使用更低的优先级以确保不会干扰主游戏初始化
 init -1500 python:
@@ -36,7 +36,7 @@ init -1500 python:
         return _wrap
 
     # ------------------------------------------------------------------
-    # Stub for jyacs_submod_utils ----------------------------------------
+    # 兼容JY......我恨jy，以及我之前半夜瞎写的代码----------------------------------------
     # ------------------------------------------------------------------
     if not hasattr(store, "jyacs_submod_utils"):
         store.jyacs_submod_utils = SimpleNamespace()
@@ -48,7 +48,7 @@ init -1500 python:
         store.jyacs_submod_utils.isSubmodInstalled = lambda name: False
 
     # ------------------------------------------------------------------
-    # 创建JY相关的命名空间，替代MAS依赖
+    # 创建JY相关的命名空间
     # ------------------------------------------------------------------
     if not hasattr(store, "jy_submod_utils"):
         store.jy_submod_utils = store.jyacs_submod_utils
@@ -68,10 +68,10 @@ init -1600 python:
     # 许多Ren'Py项目（包括Just Yuri）在options.rpy中通过config.name或gui.window_title设置显示标题。
     # 如果初始化早期的错误阻止options.rpy执行，窗口会回退到通用的"A Ren'Py Game"字符串。
     # 在这里设置一个安全的默认值，确保即使其他脚本错误发生，标题也保持正确。
-    # 
+    # 为什么会覆盖标题呀！真无语了，老子真服气了，谁写的renpy...
     # 我们只在尚未定义名称时设置它，以避免在已存在时覆盖真实值。
     if not getattr(config, "name", None):
-        config.name = "Just Yuri"
+        config.name = "Just Yuri with JYACS 1.0.0"
         print("JYACS: 已设置游戏标题为 'Just Yuri'")
     
     if not getattr(config, "window_title", None):
@@ -83,7 +83,7 @@ init -1400 python:
     if not hasattr(store, "getAPIKey"):
         store.getAPIKey = lambda *_args, **_kwargs: ""
 
-    # JY辅助函数，替代MAS依赖 -------------------
+    # JY辅助函数-------------------
     jy_helpers = {
         "_jy_getAffection": (lambda *_a, **_k: 0),
         "jy_getAffection": (lambda *_a, **_k: 0),

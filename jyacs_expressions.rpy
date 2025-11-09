@@ -1,5 +1,7 @@
-# jyacs_expressions.rpy - JYACS 表情系统
+# jyacs_expressions.rpy - JustYuriAIChatSubmod表情
 # 基于JUSTYURI的表情系统实现
+# 版本: 1.0.0
+# 作者: Panghu1102
 
 init -1200 python:
     import os

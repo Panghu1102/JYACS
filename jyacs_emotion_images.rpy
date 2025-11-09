@@ -5,14 +5,8 @@
 # 新系统使用表情编码（格式：X-YYYYY-ZZZZ）来动态组合表情
 # 而不是使用预定义的静态图片
 #
-# 保留此文件仅用于向后兼容和参考
-# 请勿在新代码中使用此模块
-#
-# 迁移指南:
-# - 旧代码: jyacs_emotion_image_manager.analyze_text_for_emotion(text)
-# - 新代码: get_expression_from_text(text)
-# - 旧代码: jyacs_emotion_image_manager.show_emotion_image(emotion)
-# - 新代码: show_chr(expression_code)
+# 这个文件是当初没想好怎么写表情的时候写的，后来因为不理想，又要强制背景，就费了点功夫，现在按照JY的方法来显示。  
+# 这个文件现在只供参考使用哈，当然价值不大，有类似项目可以研究。
 # ============================================
 
 # jyacs_emotion_images.rpy - JYACS 表情图片管理模块 (已废弃)

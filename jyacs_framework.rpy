@@ -1,4 +1,4 @@
-# JYACS框架 - 为JYACS提供基础框架支持
+# jyacs-framework.rpy - 基础框架支持
 # 版本: 1.0.0
 # 作者: Panghu1102
 
