@@ -1,9 +1,22 @@
-#!/usr/bin/env python
-# -*- coding: utf-8 -*-
+# Copyright 2025 Panghu1102
+#
+# Licensed under the Apache License, Version 2.0 (the "License");
+# you may not use this file except in compliance with the License.
+# You may obtain a copy of the License at
+#
+#    http://www.apache.org/licenses/LICENSE-2.0
+#
+# Unless required by applicable law or agreed to in writing, software
+# distributed under the License is distributed on an "AS IS" BASIS,
+# WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+# See the License for the specific language governing permissions and
+# limitations under the License.
+#
 # fix_json.py - JYACS 配置文件生成器
 # 版本: 1.0.0
 # 作者: Panghu1102
-
+# 注明：这个文件没用，不知啥原因，在config.json里改提示词没用，尝试修复，看日志都没用，要改提示词在api的rpy文件里
+# 经过认真思考，可能是整个JYACS的config和日志检测出错，在游戏开始就初始化失败，但是没事，不影响用
 """
 JYACS 配置文件生成器
 用于生成和维护 jyacs_config.json 配置文件。
