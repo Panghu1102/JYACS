@@ -91,6 +91,40 @@ Darwin-24.5.0-iPhone11,8-64bit iPhone11,8
 Ren'Py 7.8.4.24120703
 Just Yuri (Beta) Beta-1.8.5
 Sun Nov 16 14:19:18 2025
-```。  
+
+或者
+
+I'm sorry, but an uncaught exception occurred.
+[span_23](start_span)
+While parsing /private/var/mobile/Containers/Data/Application/D6DB84B3-04EF-411C-81C5-3A03FB6E11E2/Documents/games/DDLC/game/header.rpy.[span_23](end_span)
+  [span_24](start_span)File "game/init_run.rpy", line 13, in <module>[span_24](end_span)
+[span_25](start_span)ImportError: No module named singleton[span_25](end_span)
+
+-- Full Traceback ------------------------------------------------------------
+
+Full traceback:
+  File "/private/var/mobile/Containers/Data/Application/D6DB84B3-04EF-411C-81C5-3A03FB6E11E2/tmp/redmond/7.5.3/renpy/bootstrap.py", line 277, in bootstrap
+    renpy.main.main()
+  File "/private/var/mobile/Containers/Data/Application/D6DB84B3-04EF-411C-81C5-3A03FB6E11E2/tmp/redmond/7.5.3/renpy/main.py", line 490, in main
+    renpy.game.script.load_script() # sets renpy.game.script.
+[span_26](start_span)  File "/private/var/mobile/Containers/Data/Application/D6DB84B3-04EF-411C-81C5-3A03FB6E11E2/tmp/redmond/7.5.3/renpy/script.py", line 300, in load_script[span_26](end_span)
+    [span_27](start_span)self.load_appropriate_file(".rpyc", ".rpy", dir, fn, initcode)[span_27](end_span)
+  [span_28](start_span)File "/private/var/mobile/Containers/Data/Application/D6DB84B3-04EF-411C-81C5-3A03FB6E11E2/tmp/redmond/7.5.3/renpy/script.py", line 817, in load_appropriate_file[span_28](end_span)
+    [span_29](start_span)self.finish_load(stmts, initcode, filename=lastfn) # type: ignore[span_29](end_span)
+  [span_30](start_span)File "/private/var/mobile/Containers/Data/Application/D6DB84B3-04EF-411C-81C5-3A03FB6E11E2/tmp/redmond/7.5.3/renpy/script.py", line 502, in finish_load[span_30](end_span)
+    [span_31](start_span)node.early_execute()[span_31](end_span)
+  [span_32](start_span)File "/private/var/mobile/Containers/Data/Application/D6DB84B3-04EF-411C-81C5-3A03FB6E11E2/tmp/redmond/7.5.3/renpy/ast.py", line 1188, in early_execute[span_32](end_span)
+    [span_33](start_span)renpy.python.py_exec_bytecode(self.code.bytecode, self.hide, store=self.store)[span_33](end_span)
+  [span_34](start_span)File "/private/var/mobile/Containers/Data/Application/D6DB84B3-04EF-411C-81C5-3A03FB6E11E2/tmp/redmond/7.5.3/renpy/python.py", line 1061, in py_exec_bytecode[span_34](end_span)
+    [span_35](start_span)exec(bytecode, globals, locals)[span_35](end_span)
+  [span_36](start_span)File "game/init_run.rpy", line 13, in <module>[span_36](end_span)
+[span_37](start_span)ImportError: No module named singleton[span_37](end_span)
+
+[span_38](start_span)Darwin-24.5.0-iPhone11,8-64bit iPhone11,8[span_38](end_span)
+[span_39](start_span)Ren'Py 7.5.3.22090809[span_39](end_span)
+ 
+[span_40](start_span)Sun Nov 16 14:27:28 2025[span_40](end_span)
+```
+
 这是由于兼容性问题，我尝试修复后无用，特地放在这。如果有在init.rpy（类似名称）文件中保持缺少库，那么也无法修复，理解一下啦。  
 
