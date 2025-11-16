@@ -58,5 +58,39 @@ Team Salvato，JustYuriDev以及Maica制作团队（https://github.com/Mon1-inno
 请不要重复提issue，在贴吧等平台询问，感谢理解。  
 #### 一.在win上使用打字没有候选词烂。  
 这个是因为你使用了微软输入法，即win默认的那个。这个不是JYACS和Renpy的问题，微软输入法的显示方式致使其无法在renpy game中使用。  
-不过键盘的正常选词还是可以的，～～所以你可以靠着臆想，多按几次1，2，3，4，说不定就选到你要的词了哈哈～～ 
+不过键盘的正常选词还是可以的，~~所以你可以靠着臆想，多按几次1，2，3，4，说不定就选到你要的词了哈哈~~ 。  
+开个玩笑，换一个输入法或许可以解决问题。  
+#### 二.使用ios的模拟器（Spark），JYACS无法工作。  
+正确来说是开游戏报错，该问题在一开始测试就发现了。你可能遇到类似报错：
+```
+I'm sorry, but an uncaught exception occurred.
+
+While running game code:
+  File "game/jyacs_api.rpy", line 23, in script
+    init -1400 python:
+  File "game/jyacs_api.rpy", line 42, in <module>
+    from jyacs_emotion import JyacsEmoSelector
+SyntaxError: encoding declaration in Unicode string (jyacs_emotion.py, line 0)
+
+-- Full Traceback ------------------------------------------------------------
+
+Full traceback:
+  File "game/jyacs_api.rpy", line 23, in script
+    init -1400 python:
+  File "/private/var/mobile/Containers/Data/Application/D6DB84B3-04EF-411C-81C5-3A03FB6E11E2/tmp/redmond/7.8.4/renpy/ast.py", line 827, in execute
+    renpy.python.py_exec_bytecode(self.code.bytecode, self.hide, store=self.store)
+  File "/private/var/mobile/Containers/Data/Application/D6DB84B3-04EF-411C-81C5-3A03FB6E11E2/tmp/redmond/7.8.4/renpy/python.py", line 1178, in py_exec_bytecode
+    exec(bytecode, globals, locals)
+  File "game/jyacs_api.rpy", line 42, in <module>
+    from jyacs_emotion import JyacsEmoSelector
+  File "/private/var/mobile/Containers/Data/Application/D6DB84B3-04EF-411C-81C5-3A03FB6E11E2/tmp/redmond/7.8.4/renpy/loader.py", line 881, in load_module
+    code = compile(source, filename, 'exec', renpy.python.old_compile_flags, 1)
+SyntaxError: encoding declaration in Unicode string (jyacs_emotion.py, line 0)
+
+Darwin-24.5.0-iPhone11,8-64bit iPhone11,8
+Ren'Py 7.8.4.24120703
+Just Yuri (Beta) Beta-1.8.5
+Sun Nov 16 14:19:18 2025
+```。  
+这是由于兼容性问题，我尝试修复后无用，特地放在这。如果有在init.rpy（类似名称）文件中保持缺少库，那么也无法修复，理解一下啦。  
 
