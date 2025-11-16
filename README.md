@@ -51,12 +51,12 @@ JYACS与JustYuri进行了深度融合，在表情、设置等方面都与其保�
 在这之中，需要任何帮助都可以联系我的！  
 
 ## 特别鸣谢
-Team Salvato，JustYuriDev以及Maica制作团队（https://github.com/Mon1-innovation/MAICA_ChatSubmod)，JYACS在某些写法上借鉴了该项目中的内容。  
+Team Salvato，JustYuriDev以及Maica制作团队（https://github.com/Mon1-innovation/MAICA_ChatSubmod )，JYACS在某些写法上借鉴了该项目中的内容。  
 
 ## 特殊问题（永远或长期无法修复）
 由于不知名原因或者不可抗因素，一下报错/问题将永远或长时间无法修复。  
 请不要重复提issue，在贴吧等平台询问，感谢理解。  
 #### 一.在win上使用打字没有候选词烂。  
 这个是因为你使用了微软输入法，即win默认的那个。这个不是JYACS和Renpy的问题，微软输入法的显示方式致使其无法在renpy game中使用。  
-不过键盘的正常选词还是可以的，～～所以你可以靠着臆想，多按几次1，2，3，4，说不定就选到你要的词了哈哈～～ 。  
+不过键盘的正常选词还是可以的，～～所以你可以靠着臆想，多按几次1，2，3，4，说不定就选到你要的词了哈哈～～ 
 
