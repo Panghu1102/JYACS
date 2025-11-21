@@ -13,7 +13,7 @@
 # limitations under the License.
 #
 # jyacs_api.rpy - JustYuriAIChatSubmod API核心模块
-# 版本: 1.0.0
+# 版本: 1.0.1
 # 作者: Panghu1102
 
 # 基础配置
@@ -23,7 +23,7 @@ init -1500 python:
         config.language = "english"
 
     # JYACS 版本信息
-    jyacs_ver = '1.0.0'
+    jyacs_ver = '1.0.1'
 
     # 系统状态变量
     if not hasattr(persistent, "jyacs_stat"):

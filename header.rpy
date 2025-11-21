@@ -13,7 +13,7 @@
 # limitations under the License.
 #
 # header.rpy - JustYuriAIChatSubmod 逻辑文件
-# 版本: 1.0.0
+# 版本: 1.0.1
 # 作者: Panghu1102
 # 此文件有一部分参考了maica
 
@@ -35,7 +35,7 @@ init -999 python:
         chardet = None
 
     # 版本信息
-    JYACS_VERSION = "1.0.0"
+    JYACS_VERSION = "1.0.1"
     JYACS_AUTHOR = "Panghu1102"
 
 # 持久化数据初始化
@@ -515,7 +515,7 @@ init -900 python:
             author="Panghu1102",
             name="JustYuriAIChatSubmod",
             description="基于API的AI聊天系统",
-            version="1.0.0",
+            version="1.0.1",
             settings_pane="jyacs_setting_pane"
         )
 

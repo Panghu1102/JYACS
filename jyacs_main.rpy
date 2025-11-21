@@ -13,7 +13,7 @@
 # limitations under the License.
 #
 # jyacs_main.rpy - JYACS 主要游戏脚本
-# 版本: 1.0.0
+# 版本: 1.0.1
 # 作者: Panghu1102
 # 你会发现哈，如果细致研究的话，里面有些功能是没法用的，这是因为当时参考了maica....E佬原谅我（可怜）
 # 移除强制背景设置，使用原游戏的jy_bg动态背景系统

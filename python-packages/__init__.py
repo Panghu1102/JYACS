@@ -13,7 +13,7 @@
 # limitations under the License.
 #
 # __init__.py - JYACS Python 包初始化
-# 版本: 1.0.0
+# 版本: 1.0.1
 # 作者: Panghu1102
 
 """
@@ -21,7 +21,7 @@ JYACS Python 包
 提供 JYACS (Just Yuri AI Chat Submod) 的核心功能。
 """
 
-__version__ = "1.0.0"
+__version__ = "1.0.1"
 __author__ = "Panghu1102"
 
 from .jyacs_utils import JyacsLogger, JyacsConfig

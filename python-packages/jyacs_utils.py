@@ -13,7 +13,7 @@
 # limitations under the License.
 #
 # jyacs_utils.py - JYACS 工具模块
-# 版本: 1.0.0
+# 版本: 1.0.1
 # 作者: Panghu1102
 # 高级renpy...这玩意没法用哈，也不知道为啥...后面再修，反正不影响用，应该没人在意日志
 import os

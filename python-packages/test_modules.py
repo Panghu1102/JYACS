@@ -13,7 +13,7 @@
 # limitations under the License.
 #
 # test_modules.py - JYACS 模块测试工具
-# 版本: 1.0.0
+# 版本: 1.0.1
 # 作者: Panghu1102
 # 这玩意没用，所有的没用文件都是想着后面可以用到不用重新写，开发者忽略下谢谢
 """

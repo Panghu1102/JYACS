@@ -13,14 +13,14 @@
 # limitations under the License.
 #
 # jyacs_interface.py - JYACS 文本处理接口模块
-# 版本: 1.0.0
+# 版本: 1.0.1
 # 作者: Panghu1102
 
 import re
 import time
 
 class JyacsTalkSplitV2:
-    """JYACS 文本分句器 V1.0.0
+    """JYACS 文本分句器 V1.0.1
     
     基于标点符号的文本分句器。
     支持中英文标点，可以处理多种句子结构。

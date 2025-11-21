@@ -85,7 +85,7 @@ init -1600 python:
     # 为什么会覆盖标题呀！真无语了，老子真服气了，谁写的renpy...
     # 我们只在尚未定义名称时设置它，以避免在已存在时覆盖真实值。
     if not getattr(config, "name", None):
-        config.name = "Just Yuri with JYACS 1.0.0"
+        config.name = "Just Yuri with JYACS 1.0.1"
         print("JYACS: 已设置游戏标题为 'Just Yuri'")
     
     if not getattr(config, "window_title", None):

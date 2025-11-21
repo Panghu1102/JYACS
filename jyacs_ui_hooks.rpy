@@ -13,7 +13,7 @@
 # limitations under the License.
 #
 # jyacs_ui_hooks.rpy - JYACS UI 钩子和样式系统
-# 版本: 1.0.0
+# 版本: 1.0.1
 # 作者: Panghu1102
 # 说明: 新设置！
 

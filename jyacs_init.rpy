@@ -13,7 +13,7 @@
 # limitations under the License.
 #
 # jyacs_init.rpy - JYACS 初始化文件
-# 版本: 1.0.0
+# 版本: 1.0.1
 # 作者: Panghu1102
 
 # 使用更低的初始化优先级以避免干扰主游戏

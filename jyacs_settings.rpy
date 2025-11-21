@@ -13,7 +13,7 @@
 # limitations under the License.
 #
 # jyacs_settings.rpy - JYACS 设置相关函数
-# 版本: 1.0.0
+# 版本: 1.0.1
 # 作者: Panghu1102
 # 说明: 设置之类的再ui hook那个里面，这个还是和表情一样，初期的文件，没有太大价值。
 

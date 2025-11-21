@@ -13,7 +13,7 @@
 # limitations under the License.
 #
 # jyacs_emotion.py - JYACS 情绪分析模块
-# 版本: 1.0.0
+# 版本: 1.0.1
 # 作者: Panghu1102
 
 import re
