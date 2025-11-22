@@ -101,7 +101,7 @@ Ren'Py 7.8.4.24120703
 Just Yuri (Beta) Beta-1.8.5
 Sun Nov 16 14:19:18 2025
 
-或者
+or
 
 I'm sorry, but an uncaught exception occurred.
 [span_23](start_span)
