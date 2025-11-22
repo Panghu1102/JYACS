@@ -1,5 +1,5 @@
 # JYACS
-<a href="/README_en.md">English</a></p>，English version of README  
+<a href="/README_en.md">English version of README</a></p>
 欢迎访问JYACS官方仓库！整个JYACS的代码都在这里，该项目会保持不定期更新，具体频率视情况而定，你可以参照“贡献者”板块的内容来了解JYACS的更新计划！star这个项目来获取持续的更新。  
 你可以访问https://jyacs.qzz.io 来获取更多信息，我们的Cloud Compute也在那里，期待你的访问!  
 
