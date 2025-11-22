@@ -17,7 +17,7 @@ In addition, JYACS is not available on ios devices for unknown reasons, specific
 
 ## Install!
 Installing JYACS is very simple, just like you would install any other submod.
-First of all, you need to have a JustYuri ontology, you can get the latest Chinese version in https://forum.monika.love's Mopan resource integration, or in Baidu Tieba's Duoduo Wealth Management Bar. If you need the latest raw meat version, you can join JY's official discord, or you can get the same resources in Baidu Tieba's Youli Bar.
+First of all, you need to have a JustYuri ontology, you can get the latest Chinese version in https://forum.monika.love Mopan resource integration, or in Baidu Tieba's Duoduo Wealth Management Bar. If you need the latest raw meat version, you can join JY's official discord, or you can get the same resources in Baidu Tieba's Youli Bar.
 Get all this right and we're good to go. I will try to be as concise and understandable as possible.
 1. You also need a file of JYACS, you can get the latest version from Releases in this repository, or go to https://jyacs.qzz.io/versions/ to download it.
 2. Unzip the downloaded file... No tutorial is required for this step...
