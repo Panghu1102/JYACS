@@ -324,7 +324,7 @@ init -800 python:
 
     def reset_player_information():
         """重置玩家信息"""
-        # 将mas_player_additions改为jyacs_player_additions
+        # jyacs_player_additions
         persistent.jyacs_player_additions = []
         if hasattr(store, 'jyacs_log'):
             store.jyacs_log("玩家信息已重置", "INFO")
@@ -334,7 +334,7 @@ init -800 python:
         try:
             os.makedirs(os.path.join(renpy.config.basedir, "game", "Submods", "JYACS_ChatSubmod"), exist_ok=True)
             with open(os.path.join(renpy.config.basedir, "game", "Submods", "JYACS_ChatSubmod", "player_info.txt"), 'w', encoding='utf-8') as f:
-                # 将mas_player_additions改为jyacs_player_additions
+                # jyacs_player_additions
                 f.write(json.dumps(persistent.jyacs_player_additions, ensure_ascii=False, indent=2))
             renpy.notify("JYACS: 信息已导出至game/Submods/JYACS_ChatSubmod/player_info.txt")
         except Exception as e:
@@ -392,7 +392,7 @@ init -800 python:
         try:
             def get_conditional(name):
                 try:
-                    # 替换mas_getEV为更通用的getEV
+                    # 更通用的getEV
                     if hasattr(store, 'getEV') and store.getEV(name):
                         return store.getEV(name).conditional
                 except Exception as e:
