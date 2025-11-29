@@ -31,7 +31,7 @@ Open JY, and after a hurried end to Yuri's greeting, tap esc on the keyboard to 
 Scroll down to see a position circled by a black cuboid called "JYACS Settings".
 Configure the API address, key, and model name.
 You'll then need to restart the game to apply this setting. Open the game again and click JYACS to start a conversation.
-### JYACS Cloud Compute！ - Our API service
+### JYACS Cloud Compute！ - Our API service（I'm very sorry, this service is not open at present due to code problems. We will notify you as soon as it is repaired. Please understand!）
 **Advertise**
 You need to fill in the API in the JYACS settings to use the function normally.
 So, let me introduce you to Cloud Compute services!
@@ -46,7 +46,7 @@ But I'm working hard! It will definitely be maintained, please rest assured!
 There are currently no plans to recruit other contributors for this project, if you have a good idea, or even a high-quality secondary creation map, please write to jyacsdev@gmail.com
 I will definitely reply!
 
-###JYACS update plan
+### JYACS update plan
 Here we will introduce JYACS's **future update** plan, don't forget the star update!
 1. Collect the error report of the release version, make changes and fixes
 2. Adapt to py3 and create a new branch
