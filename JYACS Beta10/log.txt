@@ -1,0 +1,46 @@
+2025-07-02 14:17:32 UTC
+Windows-10-10.0.22621
+Ren'Py 7.8.7.25031702
+
+Early init took 0.13s
+Loading error handling took 0.08s
+Loading script took 2.04s
+Loading save slot metadata took 0.01s
+Loading persistent took 0.00s
+
+File "dev.rpy", line 17: invalid syntax
+        print(fu"警告: python-packages 路径不存在: {python_packages_path}")
+
+File "header.rpy", line 131: expected statement.
+    store.jyacs_submod_utils.submod_log.level = persistent.jyacs_setting_dict.get("log_level", "INFO")
+                                              ^
+
+File "header.rpy", line 135: expected statement.
+    store.jyacs.jyacs.ciphertext = store.getAPIKey("Jyacs_Token")
+                                 ^
+
+File "header.rpy", line 138: expected statement.
+    def get_build_timescamp():
+                           ^
+
+File "header.rpy", line 143: expected statement.
+    mobile_min_timescamp = 0
+                         ^
+
+File "header.rpy", line 148: expected statement.
+    text _("> 你当前的生成版本过旧, 可能影响正常运行, 请升级至最新生成版本"):
+          ^
+
+File "jyacs_api.rpy", line 511: Indentation mismatch.
+
+File "jyacs_settings.rpy", line 43: u'xpadding' is not a keyword argument or valid child of the vbox statement.
+    xpadding 20
+            ^
+
+File "jyacs_settings.rpy", line 285: u'padding' is not a keyword argument or valid child of the vbox statement.
+    padding (20, 20)
+           ^
+
+File "jyacs_settings.rpy", line 431: u'padding' is not a keyword argument or valid child of the vbox statement.
+    padding (30, 30)
+           ^
