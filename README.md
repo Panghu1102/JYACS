@@ -5,7 +5,7 @@
 
 ## 什么是JYACS
 **JYACS**是DDLC的MOD JustYuri的submod。主要通过内置的设置来配置API密钥，地址，模型名称，发送请求来实现AI对话功能。  
-JYACS与JustYuri进行了深度融合，在表情、设置等方面都与其保持一致。具体技术上的细节请参阅我们的技术文档，你可以在根目录找到，也可以访问我们的网站来更快了解。  
+JYACS与JustYuri进行了深度融合，在表情、设置等方面都与其保持一致。  
 本项目与Team Salvato和JustYuriDev没有任何关系。
 
 ## JYACS的兼容性问题
