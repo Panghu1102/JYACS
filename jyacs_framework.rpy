@@ -13,7 +13,7 @@
 # limitations under the License.
 #
 # jyacs-framework.rpy - 基础框架支持
-# 版本: 1.0.1
+# 版本: Beta 2.0.0
 # 作者: Panghu1102
 
 init -1500 python:
@@ -94,7 +94,8 @@ init -1400 python:
         store.mobile_min_timescamp = mobile_min_timescamp
 
 # 样式定义
-style jyacs_console_frame:
+# 使用 init 1 确保在 JY 原游戏样式之后定义
+init 1 style jyacs_console_frame:
     background "#000000CC"
     padding (20, 20)
     xalign 0.5
@@ -102,12 +103,12 @@ style jyacs_console_frame:
     xsize 800
     ysize 600
 
-style jyacs_console_button is button:
+init 1 style jyacs_console_button is button:
     background "#7C4A4A"
     hover_background "#8C5A5A"
     padding (15, 8)
 
-style jyacs_console_button_text is button_text:
+init 1 style jyacs_console_button_text is button_text:
     size 16
     color "#FFFFFF"
 

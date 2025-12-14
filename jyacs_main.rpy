@@ -13,7 +13,7 @@
 # limitations under the License.
 #
 # jyacs_main.rpy - JYACS 主要游戏脚本
-# 版本: 1.0.1
+# 版本: Beta 2.0.0
 # 作者: Panghu1102
 # 你会发现哈，如果细致研究的话，里面有些功能是没法用的，这是因为当时参考了maica....E佬原谅我（可怜）
 # 移除强制背景设置，使用原游戏的jy_bg动态背景系统
@@ -655,6 +655,31 @@ label submod_jyacs_init_connect(use_pause_instand_wait=False):
                 _return = "success"
                 break
             elif store.jyacs.is_failed:
+                # 调试日志：记录错误状态检查
+                # #region agent log
+                try:
+                    import json
+                    log_data = {
+                        "id": "log_debug_status_2",
+                        "timestamp": int(time.time() * 1000),
+                        "location": "jyacs_main.rpy:658",
+                        "message": "状态检查出错前状态值",
+                        "data": {
+                            "jyacs_status": getattr(store.jyacs, 'status', 'UNDEFINED'),
+                            "has_JyacsAiStatus": hasattr(store.jyacs, 'JyacsAiStatus'),
+                            "jyacs_is_failed": store.jyacs.is_failed,
+                            "type_jyacs": str(type(store.jyacs))
+                        },
+                        "sessionId": "debug-session",
+                        "runId": "status-debug-1",
+                        "hypothesisId": "A"
+                    }
+                    with open("d:\\dokiproject\\cursor\\.cursor\\debug.log", "a", encoding="utf-8") as f:
+                        f.write(json.dumps(log_data) + "\n")
+                except Exception as e:
+                    print("[JYACS-DEBUG] 日志写入失败: {}".format(e))
+                # #endregion
+
                 if store.jyacs.status == store.jyacs.JyacsAiStatus.API_KEY_FAILED:
                     store.jyacs_log("登录失败，请检查API密钥。", "ERROR")
                 elif store.jyacs.status == store.jyacs.JyacsAiStatus.CONFIG_NOTFOUND:

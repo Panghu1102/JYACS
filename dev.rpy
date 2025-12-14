@@ -13,7 +13,7 @@
 # limitations under the License.
 #
 # dev.rpy - JustYuriAIChatSubmod 文本处理核心逻辑
-# 版本: 1.0.1
+# 版本: Beta 2.0.0
 # 作者: Panghu1102
 
 init -900 python:

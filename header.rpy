@@ -13,7 +13,7 @@
 # limitations under the License.
 #
 # header.rpy - JustYuriAIChatSubmod 逻辑文件
-# 版本: 1.0.1
+# 版本: Beta 2.0.0
 # 作者: Panghu1102
 # 此文件有一部分参考了maica
 
@@ -35,8 +35,33 @@ init -999 python:
         chardet = None
 
     # 版本信息
-    JYACS_VERSION = "1.0.1"
+    JYACS_VERSION = "Beta 2.0.0"
     JYACS_AUTHOR = "Panghu1102"
+    
+    # 安全的 Tooltip 类 - 用于替代 submods_screen.scope.get("tooltip")
+    # 这解决了在其他电脑上运行时出现的 _scope KeyError 问题
+    class JyacsSafeTooltip:
+        """安全的 Tooltip 类，避免依赖 submods screen 的 scope"""
+        def __init__(self, default_value=""):
+            self.value = default_value
+            self.default = default_value
+        
+        def set_value(self, new_value):
+            self.value = new_value
+        
+        def reset(self):
+            self.value = self.default
+    
+    # 创建全局安全 tooltip 实例
+    if not hasattr(store, '_jyacs_safe_tooltip'):
+        store._jyacs_safe_tooltip = JyacsSafeTooltip("")
+    
+    def jyacs_get_safe_tooltip():
+        """获取安全的 tooltip 对象，避免 _scope KeyError"""
+        # 不再尝试访问 submods_screen.scope，直接返回安全的 tooltip
+        if not hasattr(store, '_jyacs_safe_tooltip'):
+            store._jyacs_safe_tooltip = JyacsSafeTooltip("")
+        return store._jyacs_safe_tooltip
 
 # 持久化数据初始化
 init -950 python:
@@ -515,7 +540,7 @@ init -900 python:
             author="Panghu1102",
             name="JustYuriAIChatSubmod",
             description="基于API的AI聊天系统",
-            version="1.0.1",
+            version="Beta 2.0.0",
             settings_pane="jyacs_setting_pane"
         )
 
@@ -754,12 +779,8 @@ screen jyacs_setting_pane():
 
 screen jyacs_node_setting():
     python:
-        submods_screen = store.renpy.get_screen("submods", "screens")
-
-        if submods_screen:
-            _tooltip = submods_screen.scope.get("tooltip", None)
-        else:
-            _tooltip = None
+        # 使用安全的 tooltip，避免 _scope KeyError
+        _tooltip = jyacs_get_safe_tooltip()
         def set_provider(id):
             persistent.jyacs_setting_dict["provider_id"] = id
 
@@ -818,12 +839,9 @@ screen jyacs_node_setting():
 
 screen jyacs_triggers():
     python:
-        submods_screen = store.renpy.get_screen("submods", "screens")
+        # 使用安全的 tooltip，避免 _scope KeyError
+        _tooltip = jyacs_get_safe_tooltip()
         jyacs_triggers = store.jyacs.jyacs.mtrigger_manager
-        if submods_screen:
-            _tooltip = submods_screen.scope.get("tooltip", None)
-        else:
-            _tooltip = None
 
     modal True
     zorder 215
@@ -903,13 +921,10 @@ screen jyacs_triggers():
 screen jyacs_mpostals():
     python:
         import time
-        submods_screen = store.renpy.get_screen("submods", "screens")
+        # 使用安全的 tooltip，避免 _scope KeyError
+        _tooltip = jyacs_get_safe_tooltip()
         jyacs_triggers = store.jyacs.jyacs.mtrigger_manager
         preview_len = 200
-        if submods_screen:
-            _tooltip = submods_screen.scope.get("tooltip", None)
-        else:
-            _tooltip = None
 
         # 定义安全的角色名变量
         character_name = "Yuri" if not hasattr(store, "m_name") else store.m_name
@@ -994,11 +1009,8 @@ screen jyacs_mpostals():
 
 screen jyacs_tz_setting():
     python:
-        submods_screen = store.renpy.get_screen("submods", "screens")
-        if submods_screen:
-            _tooltip = submods_screen.scope.get("tooltip", None)
-        else:
-            _tooltip = None
+        # 使用安全的 tooltip，避免 _scope KeyError
+        _tooltip = jyacs_get_safe_tooltip()
 
         def get_gmt_offset_timezone():
             import time
@@ -1168,12 +1180,8 @@ screen jyacs_tz_setting():
 
 screen jyacs_advance_setting():
     python:
-        submods_screen = store.renpy.get_screen("submods", "screens")
-
-        if submods_screen:
-            _tooltip = submods_screen.scope.get("tooltip", None)
-        else:
-            _tooltip = None
+        # 使用安全的 tooltip，避免 _scope KeyError
+        _tooltip = jyacs_get_safe_tooltip()
     modal True
     zorder 215
     
@@ -1398,12 +1406,8 @@ screen jyacs_advance_setting():
 
 screen jyacs_setting():
     python:
-        submods_screen = store.renpy.get_screen("submods", "screens")
-
-        if submods_screen:
-            _tooltip = submods_screen.scope.get("tooltip", None)
-        else:
-            _tooltip = None
+        # 使用安全的 tooltip，避免 _scope KeyError
+        _tooltip = jyacs_get_safe_tooltip()
         store.len = len
         
     modal True
@@ -1883,41 +1887,40 @@ screen jyacs_message(message = "Non Message", ok_action = Hide("jyacs_message"))
 
                 textbutton _("OK") action ok_action
 
-screen jyacs_input_screen(prompt):
-    default jyacs_input = store.jyacs.JyacsInputValue()
-    style_prefix "input"
-
-    window:
-        hbox:
-            style_prefix "quick"
-            xalign 0.5
-            yalign 0.995
-
-            textbutton _("就这样吧"):
-                selected False
-                action Return("nevermind")
-
-            textbutton _("粘贴"):
-                selected False
-                action [Function(jyacs_input.set_text, pygame.scrap.get(pygame.SCRAP_TEXT).strip()),Function(jyacs_input.set_text, pygame.scrap.get(pygame.SCRAP_TEXT).strip())]
-            
-        vbox:
-            align (0.5, 0.5)
-            spacing 30
-
-            text prompt style "input_prompt"
-            input:
-                id "input"
-                value jyacs_input
+# 注意：此 screen 已废弃，因为 JyacsInputValue 类不存在
+# 如果需要使用此 screen，请先定义 JyacsInputValue 类
+# screen jyacs_input_screen(prompt):
+#     default jyacs_input = store.jyacs.JyacsInputValue()
+#     style_prefix "input"
+#
+#     window:
+#         hbox:
+#             style_prefix "quick"
+#             xalign 0.5
+#             yalign 0.995
+#
+#             textbutton _("就这样吧"):
+#                 selected False
+#                 action Return("nevermind")
+#
+#             textbutton _("粘贴"):
+#                 selected False
+#                 action [Function(jyacs_input.set_text, pygame.scrap.get(pygame.SCRAP_TEXT).strip()),Function(jyacs_input.set_text, pygame.scrap.get(pygame.SCRAP_TEXT).strip())]
+#             
+#         vbox:
+#             align (0.5, 0.5)
+#             spacing 30
+#
+#             text prompt style "input_prompt"
+#             input:
+#                 id "input"
+#                 value jyacs_input
 
 screen jyacs_workload_stat():
     python:
-        submods_screen = store.renpy.get_screen("submods", "screens")
+        # 使用安全的 tooltip，避免 _scope KeyError
+        _tooltip = jyacs_get_safe_tooltip()
         stat = store.jyacs.jyacs.workload_raw
-        if submods_screen:
-            _tooltip = submods_screen.scope.get("tooltip", None)
-        else:
-            _tooltip = None
         store.update_interval = 15
         def check_and_update(use_none = False):
             import time

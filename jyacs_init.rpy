@@ -13,7 +13,7 @@
 # limitations under the License.
 #
 # jyacs_init.rpy - JYACS 初始化文件
-# 版本: 1.0.1
+# 版本: Beta 2.0.0
 # 作者: Panghu1102
 
 # 使用更低的初始化优先级以避免干扰主游戏
@@ -136,22 +136,19 @@ label jyacs_after_load:
     return
 
 # 添加after_load钩子，但不覆盖原始标签
+# 注意：不使用 @renpy.register_label，因为它在某些 Ren'Py 版本中可能不存在
 init 1500 python:
     # 安全地添加after_load钩子
     def jyacs_after_load_hook():
         """JYACS加载后钩子"""
-        jyacs_late_init()
+        try:
+            jyacs_late_init()
+        except Exception as e:
+            print("JYACS: after_load钩子执行失败: {}".format(e))
         return
     
-    # 如果原始after_load存在，不要覆盖它
+    # 检查原始after_load标签
     if renpy.has_label("after_load"):
-        print("JYACS: 检测到原始after_load标签，添加钩子")
-        # 这里可以添加钩子代码，但我们使用更安全的方式
+        print("JYACS: 检测到原始after_load标签，将在游戏加载后执行JYACS初始化")
     else:
-        print("JYACS: 未检测到原始after_load标签，创建新标签")
-        
-        # 定义一个安全的after_load标签
-        @renpy.register_label("after_load")
-        def _jyacs_after_load_label():
-            jyacs_late_init()
-            return
+        print("JYACS: 未检测到原始after_load标签")

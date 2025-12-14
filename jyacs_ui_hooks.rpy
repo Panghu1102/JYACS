@@ -13,7 +13,7 @@
 # limitations under the License.
 #
 # jyacs_ui_hooks.rpy - JYACS UI 钩子和样式系统
-# 版本: 1.0.1
+# 版本: Beta 2.0.0
 # 作者: Panghu1102
 # 说明: 新设置！
 
@@ -23,8 +23,12 @@
 # 继承 JY 1.10.11 的样式系统，确保视觉一致性
 
 # JYACS 标签样式（继承自 JY 的 pref_label）
-init -1 style jyacs_pref_label is pref_label
-init -1 style jyacs_pref_label_text is pref_label_text:
+# JYACS 样式定义
+# 使用 init 1 确保在 JY 原游戏样式（init -1）之后定义
+# 这避免了样式继承时的顺序问题
+
+init 1 style jyacs_pref_label is pref_label
+init 1 style jyacs_pref_label_text is pref_label_text:
     font "mod_assets/font/SarasaMonoTC-SemiBold.ttf"
     size 24
     color "#fff"
@@ -32,11 +36,11 @@ init -1 style jyacs_pref_label_text is pref_label_text:
     yalign 1.0
 
 # JYACS 复选按钮样式（继承自 JY 的 check_button）
-init -1 style jyacs_check_button is check_button:
+init 1 style jyacs_check_button is check_button:
     properties gui.button_properties("check_button")
     foreground "gui/button/check_[prefix_]foreground.png"
 
-init -1 style jyacs_check_button_text is check_button_text:
+init 1 style jyacs_check_button_text is check_button_text:
     properties gui.button_text_properties("check_button")
     font "mod_assets/font/SarasaMonoTC-SemiBold.ttf"
     outlines []
@@ -44,7 +48,7 @@ init -1 style jyacs_check_button_text is check_button_text:
     layout "nobreak"
 
 # JYACS 容器样式
-init -1 style jyacs_frame is empty:
+init 1 style jyacs_frame is empty:
     background Frame("gui/overlay/confirm.png", gui.confirm_frame_borders, tile=gui.frame_tile)
     padding gui.confirm_frame_borders.padding
     xalign 0.5
@@ -53,24 +57,24 @@ init -1 style jyacs_frame is empty:
     ysize 600
 
 # JYACS 文本样式
-init -1 style jyacs_text is gui_text:
+init 1 style jyacs_text is gui_text:
     font "mod_assets/font/SarasaMonoTC-SemiBold.ttf"
     size 18
     color "#fff"
 
-init -1 style jyacs_label_text is gui_label_text:
+init 1 style jyacs_label_text is gui_label_text:
     font "mod_assets/font/SarasaMonoTC-SemiBold.ttf"
     size 20
     color "#fff"
     outlines [(2, "#a679ff", 0, 0), (1, "#a679ff", 1, 1)]
 
 # JYACS 输入框样式
-init -1 style jyacs_input is input:
+init 1 style jyacs_input is input:
     color "#fff"
     size 18
 
 # JYACS 状态文本样式
-init -1 style jyacs_status_text is gui_text:
+init 1 style jyacs_status_text is gui_text:
     font "mod_assets/font/SarasaMonoTC-SemiBold.ttf"
     size 16
     color "#d5bdff"
@@ -279,10 +283,11 @@ init 15 screen jyacs_password_input_helper(dict_obj, key_name):
 # ----------------------------------------------------------------------------
 # 覆盖 preferences screen
 # ----------------------------------------------------------------------------
-# 使用 init -500 覆盖 JY 原始的 init -501 preferences screen
+# 使用 init 10 确保在 GUI 完全初始化之后再定义
+# 这避免了在 GUI 初始化时出现的 _scope KeyError
 
 
-init -500 screen preferences():
+init 10 screen preferences():
     # 覆盖 JY 1.10.11 的 preferences screen
     # 在底部添加 JYACS 设置区域
     
@@ -587,13 +592,14 @@ init -10 python:
 default jyacs_in_chat = False
 
 # JYACS 游戏按钮样式
-init -1 style jyacs_game_button is button:
+# 使用 init 1 确保在 JY 原游戏样式之后定义
+init 1 style jyacs_game_button is button:
     background "#a679ff80"
     hover_background "#a679ffC0"
     padding (20, 10)
     xsize 120
 
-init -1 style jyacs_game_button_text is button_text:
+init 1 style jyacs_game_button_text is button_text:
     font "mod_assets/font/SarasaMonoTC-SemiBold.ttf"
     size 20
     color "#fff"
@@ -602,13 +608,13 @@ init -1 style jyacs_game_button_text is button_text:
     layout "nobreak"
 
 # 退出按钮样式（与JYACS按钮相同的紫色）
-init -1 style jyacs_exit_button is button:
+init 1 style jyacs_exit_button is button:
     background "#a679ff80"
     hover_background "#a679ffC0"
     padding (20, 10)
     xsize 120
 
-init -1 style jyacs_exit_button_text is button_text:
+init 1 style jyacs_exit_button_text is button_text:
     font "mod_assets/font/SarasaMonoTC-SemiBold.ttf"
     size 20
     color "#fff"
@@ -617,7 +623,8 @@ init -1 style jyacs_exit_button_text is button_text:
     layout "nobreak"
 
 # JYACS 游戏内按钮 - 动态切换
-init -501 screen jyacs_game_button():
+# 使用 init 2 确保在样式定义（init 1）之后
+init 2 screen jyacs_game_button():
     zorder 100
     
     # 在JYACS对话中显示退出按钮
@@ -639,5 +646,7 @@ init -501 screen jyacs_game_button():
             action Jump("submod_jyacs_chat_start")
 
 # 将按钮添加到overlay，使其自动显示
-init python:
-    config.overlay_screens.append("jyacs_game_button")
+# 使用较高的优先级确保在GUI完全初始化之后再添加
+init 999 python:
+    if "jyacs_game_button" not in config.overlay_screens:
+        config.overlay_screens.append("jyacs_game_button")

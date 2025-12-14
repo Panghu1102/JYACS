@@ -13,7 +13,7 @@
 # limitations under the License.
 #
 # jyacs_api.rpy - JustYuriAIChatSubmod API核心模块
-# 版本: 1.0.1
+# 版本: Beta 2.0.0
 # 作者: Panghu1102
 
 # 基础配置
@@ -23,7 +23,7 @@ init -1500 python:
         config.language = "english"
 
     # JYACS 版本信息
-    jyacs_ver = '1.0.1'
+    jyacs_ver = 'Beta 2.0.0'
 
     # 系统状态变量
     if not hasattr(persistent, "jyacs_stat"):
@@ -88,6 +88,30 @@ init -1400 python:
             self.content_func = jyacs_log
             self.status = "disconnected"
             self.last_response = None
+
+            # 调试日志：记录初始化状态
+            # #region agent log
+            try:
+                import json
+                log_data = {
+                    "id": "log_debug_status_1",
+                    "timestamp": int(time.time() * 1000),
+                    "location": "jyacs_api.py:JyacsAi.__init__",
+                    "message": "JyacsAi 初始化状态检查",
+                    "data": {
+                        "status": self.status,
+                        "has_JyacsAiStatus": hasattr(self, 'JyacsAiStatus'),
+                        "type_status": str(type(self.status))
+                    },
+                    "sessionId": "debug-session",
+                    "runId": "status-debug-1",
+                    "hypothesisId": "A"
+                }
+                with open("d:\\dokiproject\\cursor\\.cursor\\debug.log", "a", encoding="utf-8") as f:
+                    f.write(json.dumps(log_data) + "\n")
+            except Exception as e:
+                print("[JYACS-DEBUG] 日志写入失败: {}".format(e))
+            # #endregion
             self.stat = {
                 "total_chat": 0, "total_received_token": 0, "received_token": 0,
                 "total_time": 0, "total_cost": 0, "session_id": 0
